@@ -1,0 +1,32 @@
+{
+  "name": "gestion-de-inventario_backend_microkernel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elvis-ls/Gestion-de-inventario_Backend_MicroKernel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elvis-ls/Gestion-de-inventario_Backend_MicroKernel/issues"
+  },
+  "homepage": "https://github.com/Elvis-ls/Gestion-de-inventario_Backend_MicroKernel#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.9.1",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
