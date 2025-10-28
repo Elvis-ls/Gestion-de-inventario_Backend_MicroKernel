@@ -18,6 +18,7 @@ export class Server {
    * Configura middlewares básicos
    */
   private setupMiddlewares(): void {
+
     // CORS - Habilita CORS para todas las peticiones
     this.app.use(cors());
 
