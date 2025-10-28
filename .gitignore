@@ -36,9 +36,5 @@ Thumbs.db
 # Optional npm cache
 .npm
 
-# Optional eslint cache
-.eslintcache
 
-# Optional jest cache
-jest-cache/
-coverage/
+
