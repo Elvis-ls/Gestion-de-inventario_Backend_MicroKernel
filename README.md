@@ -48,3 +48,8 @@ El backend sigue una arquitectura de microkernel, donde el núcleo del sistema (
 - **database**: Conexión a la base de datos.
 - **productos**: Gestión de productos.
 - **proveedores**: Gestión de proveedores.
+
+## API Documentation
+
+The API documentation can be found in the following file:
+[API_DOCUMENTATION.md](API_DOCUMENTATION.md)
