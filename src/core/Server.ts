@@ -1,4 +1,5 @@
 import express, { Express, Router } from 'express';
+import cors from 'cors';
 
 /**
  * Servidor Express básico
@@ -17,6 +18,10 @@ export class Server {
    * Configura middlewares básicos
    */
   private setupMiddlewares(): void {
+    // CORS - Habilita CORS para todas las peticiones
+    this.app.use(cors());
+
+    // Parsear JSON y URL-encoded
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
   }
