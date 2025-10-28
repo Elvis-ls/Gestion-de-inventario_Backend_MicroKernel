@@ -142,18 +142,6 @@ export class ProductosService {
   /**
    * Elimina permanentemente un producto
    */
-<<<<<<< HEAD
-async deletePermanente(codigo: number): Promise<boolean> {
-  const query = `
-    DELETE FROM productos 
-    WHERE codigo = $1
-    RETURNING codigo
-  `;
-  
-  const result = await this.db.query(query, [codigo]);
-  return result.rowCount ? result.rowCount > 0 : false;
-}
-=======
   async delete(codigo: number): Promise<boolean> {
     const query = `
       DELETE FROM productos 
@@ -163,7 +151,6 @@ async deletePermanente(codigo: number): Promise<boolean> {
     const result = await this.db.query(query, [codigo]);
     return !!result.rowCount && result.rowCount > 0;
   }
->>>>>>> e4405613962c4d716b2d0798f26752671905069d
 
   /**
    * Obtiene productos con stock bajo

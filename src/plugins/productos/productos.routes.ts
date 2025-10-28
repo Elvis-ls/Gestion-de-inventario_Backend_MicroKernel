@@ -19,7 +19,7 @@ export const createProductosRoutes = (controller: ProductosController): Router =
   router.get('/:id', controller.getById);
   router.post('/', controller.create);
   router.put('/:id', controller.update);
-  router.delete('/:id', controller.deletePermanente);
+  router.delete('/:id', controller.delete);
 
   return router;
 };

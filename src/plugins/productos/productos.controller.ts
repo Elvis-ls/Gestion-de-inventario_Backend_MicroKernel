@@ -97,10 +97,10 @@ export class ProductosController {
  * DELETE /api/productos/:id/permanente
  * Elimina FÍSICAMENTE el producto de la base de datos
  */
-deletePermanente = async (req: Request, res: Response): Promise<void> => {
+delete = async (req: Request, res: Response): Promise<void> => {
   try {
     const codigo = parseInt(req.params.id);
-    const deleted = await this.service.deletePermanente(codigo);
+    const deleted = await this.service.delete(codigo);
     
     if (!deleted) {
       res.status(404).json({
