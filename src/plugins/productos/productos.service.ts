@@ -104,54 +104,52 @@ export class ProductosService {
    * Actualiza un producto
    */
   async update(codigo: number, producto: Partial<Producto>): Promise<Producto | null> {
+    const fields = [
+      'nombre', 'descripcion', 'idcategoria', 'idproveedor', 
+      'preciocompra', 'precioventa', 'stockactual', 'stockminimo', 
+      'fechavencimiento', 'idestado'
+    ];
+
+    const setClauses = [];
+    const values = [];
+    let paramCount = 1;
+
+    for (const field of fields) {
+      if (Object.prototype.hasOwnProperty.call(producto, field)) {
+        setClauses.push(`${field} = $${paramCount++}`);
+        values.push(producto[field as keyof Producto]);
+      }
+    }
+
+    if (setClauses.length === 0) {
+      // No hay campos para actualizar, devuelve el producto actual
+      return this.getById(codigo);
+    }
+
+    values.push(codigo);
+
     const query = `
       UPDATE productos 
-      SET 
-        nombre = COALESCE($1, nombre),
-        descripcion = COALESCE($2, descripcion),
-        idcategoria = COALESCE($3, idcategoria),
-        idproveedor = COALESCE($4, idproveedor),
-        preciocompra = COALESCE($5, preciocompra),
-        precioventa = COALESCE($6, precioventa),
-        stockactual = COALESCE($7, stockactual),
-        stockminimo = COALESCE($8, stockminimo),
-        fechavencimiento = COALESCE($9, fechavencimiento),
-        idestado = COALESCE($10, idestado)
-      WHERE codigo = $11
+      SET ${setClauses.join(', ')}
+      WHERE codigo = $${paramCount}
       RETURNING *
     `;
-    
-    const values = [
-      producto.nombre,
-      producto.descripcion,
-      producto.idcategoria,
-      producto.idproveedor,
-      producto.preciocompra,
-      producto.precioventa,
-      producto.stockactual,
-      producto.stockminimo,
-      producto.fechavencimiento,
-      producto.idestado,
-      codigo
-    ];
     
     const result = await this.db.query(query, values);
     return result.rows[0] || null;
   }
 
   /**
-   * Elimina (soft delete) un producto
+   * Elimina permanentemente un producto
    */
   async delete(codigo: number): Promise<boolean> {
     const query = `
-      UPDATE productos 
-      SET idestado = 2
+      DELETE FROM productos 
       WHERE codigo = $1
-      RETURNING codigo
     `;
     
     const result = await this.db.query(query, [codigo]);
-    return result.rowCount ? result.rowCount > 0 : false;
+    return !!result.rowCount && result.rowCount > 0;
   }
 
   /**
