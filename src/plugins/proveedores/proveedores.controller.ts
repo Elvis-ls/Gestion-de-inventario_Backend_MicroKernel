@@ -118,4 +118,79 @@ export class ProveedoresController {
       });
     }
   };
+
+  getEstadisticas = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const estadisticas = await this.service.getEstadisticas();
+      res.json({
+        success: true,
+        data: estadisticas
+      });
+    } catch (error) {
+      console.error('[ProveedoresController] Error en getEstadisticas:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error obteniendo estadísticas'
+      });
+    }
+  };
+
+  /**
+   * 📊 GET /api/proveedores/dashboard/con-mas-productos
+   */
+  getProveedoresConMasProductos = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const proveedores = await this.service.getProveedoresConMasProductos();
+      res.json({
+        success: true,
+        data: proveedores
+      });
+    } catch (error) {
+      console.error('[ProveedoresController] Error en getProveedoresConMasProductos:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error obteniendo proveedores'
+      });
+    }
+  };
+
+  /**
+   * 📊 GET /api/proveedores/dashboard/top-valor
+   */
+  getTopProveedoresPorValor = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const top = await this.service.getTopProveedoresPorValor();
+      res.json({
+        success: true,
+        data: top
+      });
+    } catch (error) {
+      console.error('[ProveedoresController] Error en getTopProveedoresPorValor:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error obteniendo top proveedores'
+      });
+    }
+  };
+
+  /**
+   * 📊 GET /api/proveedores/:id/productos
+   */
+  getProductosPorProveedor = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = parseInt(req.params.id);
+      const productos = await this.service.getProductosPorProveedor(id);
+      res.json({
+        success: true,
+        data: productos,
+        count: productos.length
+      });
+    } catch (error) {
+      console.error('[ProveedoresController] Error en getProductosPorProveedor:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error obteniendo productos del proveedor'
+      });
+    }
+  };
 }

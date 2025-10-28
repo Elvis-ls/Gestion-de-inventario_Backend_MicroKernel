@@ -96,7 +96,17 @@ export class CategoriasService {
    * Elimina (soft delete) una categoría
    */
   async delete(id: number): Promise<boolean> {
-    // Cambiar estado a inactivo (idestado = 2 asumiendo que es inactivo)
+  try {
+    // Iniciar transacción
+    await this.db.query('BEGIN');
+
+    // 1. Primero quitar la categoría de los productos
+    await this.db.query(
+      `UPDATE productos SET idcategoria = NULL WHERE idcategoria = $1`,
+      [id]
+    );
+
+    // 2. Luego cambiar estado de la categoría a inactivo
     const query = `
       UPDATE categorias 
       SET idestado = 2
@@ -105,6 +115,79 @@ export class CategoriasService {
     `;
     
     const result = await this.db.query(query, [id]);
+
+    // Confirmar transacción
+    await this.db.query('COMMIT');
+
     return result.rowCount ? result.rowCount > 0 : false;
+
+  } catch (error) {
+    // Si hay error, revertir cambios
+    await this.db.query('ROLLBACK');
+    throw error;
+  }
+}
+
+  /**
+   * 📊 DASHBOARD: Obtiene estadísticas de categorías
+   */
+  async getEstadisticas(): Promise<any> {
+    const query = `
+      SELECT 
+        COUNT(*) as total_categorias,
+        COUNT(CASE WHEN idestado = 1 THEN 1 END) as activas,
+        COUNT(CASE WHEN idestado = 2 THEN 1 END) as inactivas
+      FROM categorias
+    `;
+    
+    const result = await this.db.query(query);
+    return result.rows[0];
+  }
+
+  /**
+   * 📊 DASHBOARD: Categorías con cantidad de productos
+   */
+  async getCategoriasConProductos(): Promise<any[]> {
+    const query = `
+      SELECT 
+        c.idcategoria,
+        c.nombre,
+        c.descripcion,
+        COUNT(p.codigo) as total_productos,
+        SUM(p.stockactual) as stock_total,
+        e.nombre as estado_nombre
+      FROM categorias c
+      LEFT JOIN productos p ON c.idcategoria = p.idcategoria AND p.idestado = 1
+      LEFT JOIN estados e ON c.idestado = e.idestado
+      WHERE c.idestado = 1
+      GROUP BY c.idcategoria, c.nombre, c.descripcion, e.nombre
+      ORDER BY total_productos DESC
+    `;
+    
+    const result = await this.db.query(query);
+    return result.rows;
+  }
+
+  /**
+   *  DASHBOARD: Top categorías por valor de inventario
+   */
+  async getTopCategoriasPorValor(): Promise<any[]> {
+    const query = `
+      SELECT 
+        c.idcategoria,
+        c.nombre,
+        COUNT(p.codigo) as total_productos,
+        SUM(p.stockactual * p.precioventa) as valor_inventario
+      FROM categorias c
+      LEFT JOIN productos p ON c.idcategoria = p.idcategoria AND p.idestado = 1
+      WHERE c.idestado = 1
+      GROUP BY c.idcategoria, c.nombre
+      HAVING SUM(p.stockactual * p.precioventa) > 0
+      ORDER BY valor_inventario DESC
+      LIMIT 5
+    `;
+    
+    const result = await this.db.query(query);
+    return result.rows;
   }
 }

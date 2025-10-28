@@ -108,17 +108,122 @@ export class ProveedoresService {
   }
 
   /**
-   * Elimina (soft delete) un proveedor
+   * Elimina (soft delete) una categoría
    */
   async delete(id: number): Promise<boolean> {
+    const client = await this.db.getClient();
+    
+    try {
+      await client.query('BEGIN');
+      
+      // Primero, establecer idproveedor a NULL en los productos relacionados
+      await client.query(
+        `UPDATE productos SET idproveedor = NULL WHERE idproveedor = $1`,
+        [id]
+      );
+      
+      // Luego, eliminar el proveedor
+      const result = await client.query(
+        `DELETE FROM proveedores WHERE idproveedor = $1 RETURNING idproveedor`,
+        [id]
+      );
+      
+      await client.query('COMMIT');
+      return result.rowCount ? result.rowCount > 0 : false;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * 📊 DASHBOARD: Estadísticas de proveedores
+   */
+  async getEstadisticas(): Promise<any> {
     const query = `
-      UPDATE proveedores 
-      SET idestado = 2
-      WHERE idproveedor = $1
-      RETURNING idproveedor
+      SELECT 
+        COUNT(*) as total_proveedores,
+        COUNT(CASE WHEN idestado = 1 THEN 1 END) as activos,
+        COUNT(CASE WHEN idestado = 2 THEN 1 END) as inactivos
+      FROM proveedores
     `;
     
-    const result = await this.db.query(query, [id]);
-    return result.rowCount ? result.rowCount > 0 : false;
+    const result = await this.db.query(query);
+    return result.rows[0];
+  }
+
+  /**
+   * 📊 DASHBOARD: Proveedores con más productos
+   */
+  async getProveedoresConMasProductos(): Promise<any[]> {
+    const query = `
+      SELECT 
+        pr.idproveedor,
+        pr.nombreempresa,
+        pr.telefono,
+        pr.email,
+        COUNT(p.codigo) as total_productos,
+        SUM(p.stockactual) as stock_total,
+        SUM(p.stockactual * p.precioventa) as valor_inventario
+      FROM proveedores pr
+      LEFT JOIN productos p ON pr.idproveedor = p.idproveedor AND p.idestado = 1
+      WHERE pr.idestado = 1
+      GROUP BY pr.idproveedor, pr.nombreempresa, pr.telefono, pr.email
+      HAVING COUNT(p.codigo) > 0
+      ORDER BY total_productos DESC
+    `;
+    
+    const result = await this.db.query(query);
+    return result.rows;
+  }
+
+  /**
+   * 📊 DASHBOARD: Top proveedores por valor de inventario
+   */
+  async getTopProveedoresPorValor(): Promise<any[]> {
+    const query = `
+      SELECT 
+        pr.idproveedor,
+        pr.nombreempresa,
+        COUNT(p.codigo) as total_productos,
+        SUM(p.stockactual * p.preciocompra) as costo_total,
+        SUM(p.stockactual * p.precioventa) as valor_venta_total,
+        SUM(p.stockactual * (p.precioventa - p.preciocompra)) as ganancia_potencial
+      FROM proveedores pr
+      LEFT JOIN productos p ON pr.idproveedor = p.idproveedor AND p.idestado = 1
+      WHERE pr.idestado = 1
+      GROUP BY pr.idproveedor, pr.nombreempresa
+      HAVING SUM(p.stockactual * p.precioventa) > 0
+      ORDER BY valor_venta_total DESC
+      LIMIT 10
+    `;
+    
+    const result = await this.db.query(query);
+    return result.rows;
+  }
+
+  /**
+   * 📊 DASHBOARD: Productos por proveedor específico
+   */
+  async getProductosPorProveedor(idProveedor: number): Promise<any[]> {
+    const query = `
+      SELECT 
+        p.codigo,
+        p.nombre,
+        p.stockactual,
+        p.preciocompra,
+        p.precioventa,
+        c.nombre as categoria_nombre,
+        (p.stockactual * p.precioventa) as valor_stock
+      FROM productos p
+      LEFT JOIN categorias c ON p.idcategoria = c.idcategoria
+      WHERE p.idproveedor = $1 AND p.idestado = 1
+      ORDER BY valor_stock DESC
+    `;
+    
+    const result = await this.db.query(query, [idProveedor]);
+    return result.rows;
   }
 }

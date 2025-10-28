@@ -134,4 +134,61 @@ export class CategoriasController {
       });
     }
   };
+
+  /**
+ * GET /api/categorias/dashboard/estadisticas
+ */
+getEstadisticas = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const estadisticas = await this.service.getEstadisticas();
+    res.json({
+      success: true,
+      data: estadisticas
+    });
+  } catch (error) {
+    console.error('[CategoriasController] Error en getEstadisticas:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error obteniendo estadísticas de categorías'
+    });
+  }
+};
+
+/**
+ * GET /api/categorias/dashboard/con-productos
+ */
+getCategoriasConProductos = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const categorias = await this.service.getCategoriasConProductos();
+    res.json({
+      success: true,
+      data: categorias
+    });
+  } catch (error) {
+    console.error('[CategoriasController] Error en getCategoriasConProductos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error obteniendo categorías con productos'
+    });
+  }
+};
+
+/**
+ * GET /api/categorias/dashboard/top-valor
+ */
+getTopCategoriasPorValor = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const topCategorias = await this.service.getTopCategoriasPorValor();
+    res.json({
+      success: true,
+      data: topCategorias
+    });
+  } catch (error) {
+    console.error('[CategoriasController] Error en getTopCategoriasPorValor:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error obteniendo top categorías por valor'
+    });
+  }
+};
 }
