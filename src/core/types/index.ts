@@ -1,1 +1,1 @@
-// Exportaciones de tipos
+export * from './Plugin';
