@@ -6,6 +6,7 @@ import { databasePlugin } from './plugins/database';
 import { categoriasPlugin } from './plugins/categorias';
 import { proveedoresPlugin } from './plugins/proveedores';
 import { productosPlugin } from './plugins/productos';
+import { authPlugin } from './plugins/auth';
 
 /**
  * Punto de entrada de la aplicación
@@ -23,6 +24,7 @@ async function bootstrap() {
     await microkernel.registerPlugin(categoriasPlugin);
     await microkernel.registerPlugin(proveedoresPlugin);
     await microkernel.registerPlugin(productosPlugin);
+    await microkernel.registerPlugin(authPlugin);
 
     // Iniciar el sistema
     await microkernel.start();
