@@ -31,10 +31,10 @@ export class ProveedoresPlugin implements Plugin {
     this.router = createProveedoresRoutes(this.controller);
 
     eventBus.on('proveedor:created', (data) => {
-      console.log('📢 [ProveedoresPlugin] Nuevo proveedor creado:', data);
+      console.log(' [ProveedoresPlugin] Nuevo proveedor creado:', data);
     });
 
-    console.log('✅ [ProveedoresPlugin] Inicializado correctamente');
+    console.log(' [ProveedoresPlugin] Inicializado correctamente');
   }
 
   getRoutes(): Router {
@@ -42,6 +42,6 @@ export class ProveedoresPlugin implements Plugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔌 [ProveedoresPlugin] Cerrando...');
+    console.log(' [ProveedoresPlugin] Cerrando...');
   }
 }

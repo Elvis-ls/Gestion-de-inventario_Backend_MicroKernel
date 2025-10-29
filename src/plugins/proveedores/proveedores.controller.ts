@@ -136,7 +136,7 @@ export class ProveedoresController {
   };
 
   /**
-   * 📊 GET /api/proveedores/dashboard/con-mas-productos
+   *  GET /api/proveedores/dashboard/con-mas-productos
    */
   getProveedoresConMasProductos = async (_req: Request, res: Response): Promise<void> => {
     try {
@@ -155,7 +155,7 @@ export class ProveedoresController {
   };
 
   /**
-   * 📊 GET /api/proveedores/dashboard/top-valor
+   *  GET /api/proveedores/dashboard/top-valor
    */
   getTopProveedoresPorValor = async (_req: Request, res: Response): Promise<void> => {
     try {
@@ -174,7 +174,7 @@ export class ProveedoresController {
   };
 
   /**
-   * 📊 GET /api/proveedores/:id/productos
+   *  GET /api/proveedores/:id/productos
    */
   getProductosPorProveedor = async (req: Request, res: Response): Promise<void> => {
     try {

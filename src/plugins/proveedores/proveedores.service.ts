@@ -139,7 +139,7 @@ export class ProveedoresService {
   }
 
   /**
-   * 📊 DASHBOARD: Estadísticas de proveedores
+   *  DASHBOARD: Estadísticas de proveedores
    */
   async getEstadisticas(): Promise<any> {
     const query = `
@@ -155,7 +155,7 @@ export class ProveedoresService {
   }
 
   /**
-   * 📊 DASHBOARD: Proveedores con más productos
+   *  DASHBOARD: Proveedores con más productos
    */
   async getProveedoresConMasProductos(): Promise<any[]> {
     const query = `
@@ -180,7 +180,7 @@ export class ProveedoresService {
   }
 
   /**
-   * 📊 DASHBOARD: Top proveedores por valor de inventario
+   *  DASHBOARD: Top proveedores por valor de inventario
    */
   async getTopProveedoresPorValor(): Promise<any[]> {
     const query = `
@@ -205,7 +205,7 @@ export class ProveedoresService {
   }
 
   /**
-   * 📊 DASHBOARD: Productos por proveedor específico
+   *  DASHBOARD: Productos por proveedor específico
    */
   async getProductosPorProveedor(idProveedor: number): Promise<any[]> {
     const query = `

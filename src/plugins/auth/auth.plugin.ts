@@ -32,7 +32,7 @@ export class AuthPlugin implements Plugin {
     this.controller = new AuthController(this.service);
     this.router = createAuthRoutes(this.controller);
 
-    console.log('✅ [AuthPlugin] Inicializado correctamente');
+    console.log(' [AuthPlugin] Inicializado correctamente');
   }
 
   getRoutes(): Router {
@@ -40,6 +40,6 @@ export class AuthPlugin implements Plugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔌 [AuthPlugin] Cerrando...');
+    console.log(' [AuthPlugin] Cerrando...');
   }
 }

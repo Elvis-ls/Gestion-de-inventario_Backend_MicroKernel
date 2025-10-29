@@ -31,19 +31,19 @@ async function bootstrap() {
 
     // Manejar señales de cierre graceful
     process.on('SIGINT', async () => {
-      console.log('\n\n🛑 Señal SIGINT recibida. Cerrando aplicación...');
+      console.log('\n\n Señal SIGINT recibida. Cerrando aplicación...');
       await microkernel.shutdown();
       process.exit(0);
     });
 
     process.on('SIGTERM', async () => {
-      console.log('\n\n🛑 Señal SIGTERM recibida. Cerrando aplicación...');
+      console.log('\n\n Señal SIGTERM recibida. Cerrando aplicación...');
       await microkernel.shutdown();
       process.exit(0);
     });
 
   } catch (error) {
-    console.error('💥 Error fatal iniciando la aplicación:', error);
+    console.error(' Error fatal iniciando la aplicación:', error);
     process.exit(1);
   }
 }

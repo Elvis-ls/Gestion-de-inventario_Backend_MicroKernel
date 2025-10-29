@@ -174,7 +174,7 @@ export class ProductosService {
   }
 
   /**
-   * 📊 DASHBOARD: Estadísticas generales de productos
+   * DASHBOARD: Estadísticas generales de productos
    */
   async getEstadisticas(): Promise<any> {
     const query = `
@@ -195,7 +195,7 @@ export class ProductosService {
   }
 
   /**
-   * 📊 DASHBOARD: Productos más vendidos (simulado por stock bajo)
+   * DASHBOARD: Productos más vendidos (simulado por stock bajo)
    */
   async getProductosMasMovidos(): Promise<any[]> {
     const query = `
@@ -219,7 +219,7 @@ export class ProductosService {
   }
 
   /**
-   * 📊 DASHBOARD: Productos próximos a vencer
+   *  DASHBOARD: Productos próximos a vencer
    */
   async getProductosProximosVencer(dias: number = 30): Promise<ProductoCompleto[]> {
     const query = `
@@ -242,7 +242,7 @@ export class ProductosService {
   }
 
   /**
-   * 📊 DASHBOARD: Top productos por valor
+   *  DASHBOARD: Top productos por valor
    */
   async getTopProductosPorValor(): Promise<any[]> {
     const query = `
@@ -265,7 +265,7 @@ export class ProductosService {
   }
 
   /**
-   * 📊 DASHBOARD: Resumen por categoría
+   *  DASHBOARD: Resumen por categoría
    */
   async getResumenPorCategoria(): Promise<any[]> {
     const query = `

@@ -33,8 +33,8 @@ const validateConfig = () => {
   const missing = requiredVars.filter(varName => !process.env[varName]);
 
   if (missing.length > 0) {
-    console.error('❌ [Config] Variables de entorno faltantes:', missing.join(', '));
-    console.error('💡 [Config] Asegúrate de tener un archivo .env con todas las variables necesarias');
+    console.error(' [Config] Variables de entorno faltantes:', missing.join(', '));
+    console.error(' [Config] Asegúrate de tener un archivo .env con todas las variables necesarias');
     process.exit(1);
   }
 };

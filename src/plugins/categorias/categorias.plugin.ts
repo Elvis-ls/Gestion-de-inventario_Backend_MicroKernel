@@ -22,7 +22,7 @@ export class CategoriasPlugin implements Plugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔌 [CategoriasPlugin] Inicializando...');
+    console.log(' [CategoriasPlugin] Inicializando...');
 
     // Obtener servicio de base de datos
     const dbService = DatabaseService.getInstance();
@@ -34,10 +34,10 @@ export class CategoriasPlugin implements Plugin {
 
     // Escuchar eventos (ejemplo)
     eventBus.on('categoria:created', (data) => {
-      console.log('📢 [CategoriasPlugin] Nueva categoría creada:', data);
+      console.log(' [CategoriasPlugin] Nueva categoría creada:', data);
     });
 
-    console.log('✅ [CategoriasPlugin] Inicializado correctamente');
+    console.log(' [CategoriasPlugin] Inicializado correctamente');
   }
 
   getRoutes(): Router {
@@ -45,6 +45,6 @@ export class CategoriasPlugin implements Plugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔌 [CategoriasPlugin] Cerrando...');
+    console.log(' [CategoriasPlugin] Cerrando...');
   }
 }

@@ -41,7 +41,7 @@ export class Server {
   public start(): Promise<void> {
     return new Promise((resolve) => {
       this.app.listen(this.port, () => {
-        console.log(`\n🚀 [Server] Servidor corriendo en http://localhost:${this.port}`);
+        console.log(`\n [Server] Servidor corriendo en http://localhost:${this.port}`);
         resolve();
       });
     });

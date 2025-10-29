@@ -22,7 +22,7 @@ export class ProductosPlugin implements Plugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔌 [ProductosPlugin] Inicializando...');
+    console.log(' [ProductosPlugin] Inicializando...');
 
     const dbService = DatabaseService.getInstance();
 
@@ -31,10 +31,10 @@ export class ProductosPlugin implements Plugin {
     this.router = createProductosRoutes(this.controller);
 
     eventBus.on('producto:created', (data) => {
-      console.log('📢 [ProductosPlugin] Nuevo producto creado:', data);
+      console.log(' [ProductosPlugin] Nuevo producto creado:', data);
     });
 
-    console.log('✅ [ProductosPlugin] Inicializado correctamente');
+    console.log(' [ProductosPlugin] Inicializado correctamente');
   }
 
   getRoutes(): Router {
@@ -42,6 +42,6 @@ export class ProductosPlugin implements Plugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔌 [ProductosPlugin] Cerrando...');
+    console.log(' [ProductosPlugin] Cerrando...');
   }
 }

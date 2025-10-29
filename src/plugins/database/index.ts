@@ -16,7 +16,7 @@ export class DatabasePlugin implements Plugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔌 [DatabasePlugin] Inicializando...');
+    console.log(' [DatabasePlugin] Inicializando...');
 
     // Probar conexión
     const connected = await this.dbService.testConnection();
@@ -27,15 +27,15 @@ export class DatabasePlugin implements Plugin {
 
     // Escuchar evento de cierre del sistema
     eventBus.on('system:stopping', async () => {
-      console.log('🔌 [DatabasePlugin] Recibida señal de cierre...');
+      console.log(' [DatabasePlugin] Recibida señal de cierre...');
       await this.shutdown();
     });
 
-    console.log('✅ [DatabasePlugin] Inicializado correctamente');
+    console.log(' [DatabasePlugin] Inicializado correctamente');
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔌 [DatabasePlugin] Cerrando conexiones...');
+    console.log(' [DatabasePlugin] Cerrando conexiones...');
     await this.dbService.disconnect();
   }
 

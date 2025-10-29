@@ -29,11 +29,11 @@ export class DatabaseService {
    */
   private setupListeners(): void {
     this.pool.on('connect', () => {
-      console.log('🔗 [Database] Nueva conexión establecida');
+      console.log(' [Database] Nueva conexión establecida');
     });
 
     this.pool.on('error', (err) => {
-      console.error('❌ [Database] Error inesperado en el pool:', err);
+      console.error(' [Database] Error inesperado en el pool:', err);
     });
   }
 
@@ -43,11 +43,11 @@ export class DatabaseService {
   public async testConnection(): Promise<boolean> {
     try {
       const result = await this.pool.query('SELECT NOW()');
-      console.log('✅ [Database] Conexión exitosa a PostgreSQL');
-      console.log(`📅 [Database] Timestamp del servidor: ${result.rows[0].now}`);
+      console.log(' [Database] Conexión exitosa a PostgreSQL');
+      console.log(` [Database] Timestamp del servidor: ${result.rows[0].now}`);
       return true;
     } catch (error) {
-      console.error('❌ [Database] Error conectando a PostgreSQL:', error);
+      console.error(' [Database] Error conectando a PostgreSQL:', error);
       return false;
     }
   }
@@ -60,10 +60,10 @@ export class DatabaseService {
     try {
       const result = await this.pool.query(text, params);
       const duration = Date.now() - start;
-      console.log(`⚡ [Database] Query ejecutada en ${duration}ms`);
+      console.log(` [Database] Query ejecutada en ${duration}ms`);
       return result;
     } catch (error) {
-      console.error('❌ [Database] Error ejecutando query:', error);
+      console.error(' [Database] Error ejecutando query:', error);
       throw error;
     }
   }
@@ -81,9 +81,9 @@ export class DatabaseService {
   public async disconnect(): Promise<void> {
     try {
       await this.pool.end();
-      console.log('✅ [Database] Pool de conexiones cerrado');
+      console.log(' [Database] Pool de conexiones cerrado');
     } catch (error) {
-      console.error('❌ [Database] Error cerrando pool:', error);
+      console.error(' [Database] Error cerrando pool:', error);
       throw error;
     }
   }

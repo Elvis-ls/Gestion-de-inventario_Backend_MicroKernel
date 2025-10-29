@@ -17,7 +17,7 @@ export class EventBus {
       this.listeners.set(event, []);
     }
     this.listeners.get(event)!.push(callback);
-    console.log(`📡 [EventBus] Listener registrado para evento: ${event}`);
+    console.log(` [EventBus] Listener registrado para evento: ${event}`);
   }
 
   /**
@@ -26,7 +26,7 @@ export class EventBus {
   emit(event: string, data?: any): void {
     const eventListeners = this.listeners.get(event);
     if (eventListeners) {
-      console.log(`📢 [EventBus] Emitiendo evento: ${event}`);
+      console.log(` [EventBus] Emitiendo evento: ${event}`);
       eventListeners.forEach(callback => callback(data));
     }
   }
@@ -40,7 +40,7 @@ export class EventBus {
       const index = eventListeners.indexOf(callback);
       if (index > -1) {
         eventListeners.splice(index, 1);
-        console.log(`🔇 [EventBus] Listener removido del evento: ${event}`);
+        console.log(` [EventBus] Listener removido del evento: ${event}`);
       }
     }
   }
@@ -51,10 +51,10 @@ export class EventBus {
   removeAllListeners(event?: string): void {
     if (event) {
       this.listeners.delete(event);
-      console.log(`🗑️  [EventBus] Todos los listeners removidos del evento: ${event}`);
+      console.log(`  [EventBus] Todos los listeners removidos del evento: ${event}`);
     } else {
       this.listeners.clear();
-      console.log(`🗑️  [EventBus] Todos los listeners removidos`);
+      console.log(` [EventBus] Todos los listeners removidos`);
     }
   }
 }

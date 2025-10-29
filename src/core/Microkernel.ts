@@ -46,9 +46,9 @@ export class Microkernel {
       // Guardar plugin
       this.plugins.set(plugin.name, plugin);
       
-      console.log(`✅ [Microkernel] Plugin ${plugin.name} registrado exitosamente`);
+      console.log(` [Microkernel] Plugin ${plugin.name} registrado exitosamente`);
     } catch (error) {
-      console.error(`❌ [Microkernel] Error registrando plugin ${plugin.name}:`, error);
+      console.error(` [Microkernel] Error registrando plugin ${plugin.name}:`, error);
       throw error;
     }
   }
@@ -58,7 +58,7 @@ export class Microkernel {
    */
   public async start(): Promise<void> {
     console.log('\n='.repeat(50));
-    console.log('🏗️  INICIANDO MICROKERNEL');
+    console.log('  INICIANDO MICROKERNEL');
     console.log('='.repeat(50));
 
     try {
@@ -72,10 +72,10 @@ export class Microkernel {
       this.eventBus.emit('system:started');
 
       console.log('\n✨ [Microkernel] Sistema iniciado correctamente');
-      console.log(`📦 [Microkernel] Plugins cargados: ${this.plugins.size}`);
+      console.log(` [Microkernel] Plugins cargados: ${this.plugins.size}`);
       console.log('='.repeat(50) + '\n');
     } catch (error) {
-      console.error('❌ [Microkernel] Error iniciando el sistema:', error);
+      console.error(' [Microkernel] Error iniciando el sistema:', error);
       throw error;
     }
   }
@@ -84,20 +84,20 @@ export class Microkernel {
    * Detiene el microkernel y limpia recursos
    */
   public async shutdown(): Promise<void> {
-    console.log('\n🛑 [Microkernel] Deteniendo sistema...');
+    console.log('\n [Microkernel] Deteniendo sistema...');
     
     this.eventBus.emit('system:stopping');
 
     // Ejecutar shutdown de cada plugin
     for (const [name, plugin] of this.plugins) {
       if (plugin.shutdown) {
-        console.log(`🔌 [Microkernel] Deteniendo plugin: ${name}`);
+        console.log(` [Microkernel] Deteniendo plugin: ${name}`);
         await plugin.shutdown();
       }
     }
 
     this.eventBus.emit('system:stopped');
-    console.log('✅ [Microkernel] Sistema detenido correctamente');
+    console.log(' [Microkernel] Sistema detenido correctamente');
   }
 
   /**

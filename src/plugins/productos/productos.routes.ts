@@ -7,7 +7,7 @@ import { ProductosController } from './productos.controller';
 export const createProductosRoutes = (controller: ProductosController): Router => {
   const router = Router();
 
-  // 📊 RUTAS DE DASHBOARD (deben ir PRIMERO, antes de /:id)
+  //  RUTAS DE DASHBOARD (deben ir PRIMERO, antes de /:id)
   router.get('/dashboard/estadisticas', controller.getEstadisticas);
   router.get('/dashboard/mas-movidos', controller.getProductosMasMovidos);
   router.get('/dashboard/proximos-vencer', controller.getProductosProximosVencer);

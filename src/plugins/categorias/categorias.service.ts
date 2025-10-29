@@ -145,7 +145,7 @@ export class CategoriasService {
   }
 
   /**
-   * 📊 DASHBOARD: Categorías con cantidad de productos
+   *  DASHBOARD: Categorías con cantidad de productos
    */
   async getCategoriasConProductos(): Promise<any[]> {
     const query = `
