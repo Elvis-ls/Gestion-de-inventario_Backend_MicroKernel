@@ -22,7 +22,7 @@ export class Microkernel {
    */
   public async registerPlugin(plugin: Plugin): Promise<void> {
     try {
-      console.log(`\n🔌 [Microkernel] Registrando plugin: ${plugin.name} v${plugin.version}`);
+      console.log(`\n [Microkernel] Registrando plugin: ${plugin.name} v${plugin.version}`);
 
       // Verificar dependencias
       if (plugin.dependencies) {
@@ -71,7 +71,7 @@ export class Microkernel {
       // Emitir evento de inicio completado
       this.eventBus.emit('system:started');
 
-      console.log('\n✨ [Microkernel] Sistema iniciado correctamente');
+      console.log('\n [Microkernel] Sistema iniciado correctamente');
       console.log(` [Microkernel] Plugins cargados: ${this.plugins.size}`);
       console.log('='.repeat(50) + '\n');
     } catch (error) {
@@ -87,7 +87,7 @@ export class Microkernel {
     console.log('\n [Microkernel] Deteniendo sistema...');
     
     this.eventBus.emit('system:stopping');
-
+/*
     // Ejecutar shutdown de cada plugin
     for (const [name, plugin] of this.plugins) {
       if (plugin.shutdown) {
@@ -95,7 +95,7 @@ export class Microkernel {
         await plugin.shutdown();
       }
     }
-
+*/
     this.eventBus.emit('system:stopped');
     console.log(' [Microkernel] Sistema detenido correctamente');
   }

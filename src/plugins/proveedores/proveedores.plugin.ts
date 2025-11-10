@@ -22,7 +22,7 @@ export class ProveedoresPlugin implements Plugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔌 [ProveedoresPlugin] Inicializando...');
+    console.log(' [ProveedoresPlugin] Inicializando...');
 
     const dbService = DatabaseService.getInstance();
 

@@ -32,7 +32,7 @@ export class Server {
    */
   public registerRoutes(basePath: string, router: Router): void {
     this.app.use(basePath, router);
-    console.log(`🛣️  [Server] Rutas registradas en: ${basePath}`);
+    console.log(`  [Server] Rutas registradas en: ${basePath}`);
   }
 
   /**

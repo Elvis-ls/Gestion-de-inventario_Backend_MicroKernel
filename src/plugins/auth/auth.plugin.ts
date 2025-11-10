@@ -22,7 +22,7 @@ export class AuthPlugin implements Plugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔌 [AuthPlugin] Inicializando...');
+    console.log(' [AuthPlugin] Inicializando...');
 
     // Obtener servicio de base de datos
     const dbService = DatabaseService.getInstance();

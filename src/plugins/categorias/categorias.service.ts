@@ -129,7 +129,7 @@ export class CategoriasService {
 }
 
   /**
-   * 📊 DASHBOARD: Obtiene estadísticas de categorías
+   *  DASHBOARD: Obtiene estadísticas de categorías
    */
   async getEstadisticas(): Promise<any> {
     const query = `
