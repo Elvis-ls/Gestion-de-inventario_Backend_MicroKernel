@@ -15,7 +15,7 @@ export interface Plugin {
   initialize(eventBus: EventBus): Promise<void>;
   
   /**
-   * Retorna las rutas del plugin (opcional)
+   * Retorna las rutas del plugin 
    */
   getRoutes?(): Router;
   
@@ -25,7 +25,7 @@ export interface Plugin {
   shutdown?(): Promise<void>;
   
   /**
-   * Define dependencias de otros plugins (opcional)
+   * Define dependencias de otros plugins
    */
   dependencies?(): string[];
 }

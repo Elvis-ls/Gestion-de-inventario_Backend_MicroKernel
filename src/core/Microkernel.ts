@@ -87,15 +87,7 @@ export class Microkernel {
     console.log('\n [Microkernel] Deteniendo sistema...');
     
     this.eventBus.emit('system:stopping');
-/*
-    // Ejecutar shutdown de cada plugin
-    for (const [name, plugin] of this.plugins) {
-      if (plugin.shutdown) {
-        console.log(` [Microkernel] Deteniendo plugin: ${name}`);
-        await plugin.shutdown();
-      }
-    }
-*/
+
     this.eventBus.emit('system:stopped');
     console.log(' [Microkernel] Sistema detenido correctamente');
   }
