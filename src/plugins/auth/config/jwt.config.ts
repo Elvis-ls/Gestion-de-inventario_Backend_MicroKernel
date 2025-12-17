@@ -1,32 +1,33 @@
 // src/plugins/auth/config/jwt.config.ts
 
+import { Algorithm } from 'jsonwebtoken';
+
 /**
  * Configuración de JWT
  * Contiene todas las constantes y configuraciones relacionadas con tokens
  */
-
 export const jwtConfig = {
   // Secreto para firmar tokens de acceso
   secret: process.env.JWT_SECRET || 'default_secret_change_in_production',
   
   // Tiempo de expiración del token de acceso
-  expiresIn: process.env.JWT_EXPIRES_IN || '24h', // 24 horas
+  expiresIn: process.env.JWT_EXPIRES_IN || '24h',
   
   // Secreto para tokens de refresh (debe ser diferente al de access)
   refreshSecret: process.env.JWT_REFRESH_SECRET || 'default_refresh_secret_change_in_production',
   
   // Tiempo de expiración del refresh token
-  refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d', // 7 días
+  refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   
-  // Algoritmo de firma
-  algorithm: 'HS256' as const,
+  // ✅ FIX: Tipar correctamente el algoritmo
+  algorithm: 'HS256' as Algorithm,
   
   // Emisor del token
   issuer: 'inventario-microkernel',
   
   // Audiencia
   audience: 'inventario-api',
-};
+} as const; // ✅ FIX: Hacer el objeto readonly
 
 /**
  * Valida que las configuraciones críticas de JWT estén presentes

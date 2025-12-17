@@ -1,6 +1,6 @@
 // src/plugins/auth/services/jwt.service.ts
 
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions, VerifyOptions } from 'jsonwebtoken';
 import { jwtConfig } from '../config/jwt.config';
 import { JwtPayload, RefreshTokenPayload, AuthTokens } from '../types/jwt.types';
 
@@ -14,14 +14,14 @@ export class JwtService {
   static generateAccessToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string {
     try {
       const token = jwt.sign(
-        payload,
-        jwtConfig.secret,
+        payload as any,
+        jwtConfig.secret as string,
         {
           expiresIn: jwtConfig.expiresIn,
           algorithm: jwtConfig.algorithm,
           issuer: jwtConfig.issuer,
           audience: jwtConfig.audience,
-        }
+        } as SignOptions
       );
       
       return token;
@@ -42,14 +42,14 @@ export class JwtService {
       };
 
       const token = jwt.sign(
-        refreshPayload,
-        jwtConfig.refreshSecret,
+        refreshPayload as any,
+        jwtConfig.refreshSecret as string,
         {
           expiresIn: jwtConfig.refreshExpiresIn,
           algorithm: jwtConfig.algorithm,
           issuer: jwtConfig.issuer,
           audience: jwtConfig.audience,
-        }
+        } as SignOptions
       );
       
       return token;
@@ -87,11 +87,11 @@ export class JwtService {
    */
   static verifyAccessToken(token: string): JwtPayload {
     try {
-      const decoded = jwt.verify(token, jwtConfig.secret, {
+      const decoded = jwt.verify(token, jwtConfig.secret as string, {
         algorithms: [jwtConfig.algorithm],
         issuer: jwtConfig.issuer,
         audience: jwtConfig.audience,
-      }) as JwtPayload;
+      } as VerifyOptions) as unknown as JwtPayload;
 
       return decoded;
     } catch (error) {
@@ -110,11 +110,11 @@ export class JwtService {
    */
   static verifyRefreshToken(token: string): RefreshTokenPayload {
     try {
-      const decoded = jwt.verify(token, jwtConfig.refreshSecret, {
+      const decoded = jwt.verify(token, jwtConfig.refreshSecret as string, {
         algorithms: [jwtConfig.algorithm],
         issuer: jwtConfig.issuer,
         audience: jwtConfig.audience,
-      }) as RefreshTokenPayload;
+      } as VerifyOptions) as unknown as RefreshTokenPayload;
 
       // Verificar que sea un refresh token
       if (decoded.tokenType !== 'refresh') {
@@ -139,7 +139,8 @@ export class JwtService {
    */
   static decodeToken(token: string): JwtPayload | null {
     try {
-      return jwt.decode(token) as JwtPayload;
+      const decoded = jwt.decode(token, { complete: false }) as JwtPayload | null;
+      return decoded;
     } catch (error) {
       console.error('[JwtService] Error decodificando token:', error);
       return null;

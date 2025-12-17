@@ -39,9 +39,18 @@ export class AuthController {
         return;
       }
 
+      // ✅ FIX: Validar que idadmin exista
+      if (!admin.idadmin) {
+        res.status(500).json({
+          success: false,
+          message: 'Error: ID de administrador no disponible',
+        });
+        return;
+      }
+
       // Generar tokens JWT
       const tokens = JwtService.generateTokens(
-        admin.idadmin,
+        admin.idadmin,     // ✅ Ya validado que no es undefined
         admin.usuario,
         // Puedes añadir email si lo tienes en tu tabla
       );
@@ -100,9 +109,18 @@ export class AuthController {
         return;
       }
 
+      // ✅ FIX: Validar que idadmin exista
+      if (!admin.idadmin) {
+        res.status(500).json({
+          success: false,
+          message: 'Error: ID de administrador no disponible',
+        });
+        return;
+      }
+
       // Generar nuevos tokens
       const tokens = JwtService.generateTokens(
-        admin.idadmin,
+        admin.idadmin,     // ✅ Ya validado
         admin.usuario,
       );
 
