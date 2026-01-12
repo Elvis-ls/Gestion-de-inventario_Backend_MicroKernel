@@ -8,13 +8,7 @@ import { FactorySelector } from './plugins/factories/FactorySelector';
  */
 async function bootstrap() {
   try {
-    console.log('\n');
-    console.log('╔═══════════════════════════════════════════════════════════╗');
-    console.log('║   SISTEMA DE GESTIÓN DE INVENTARIO                        ║');
-    console.log('║   Arquitectura: Microkernel + Abstract Factory            ║');
-    console.log('╚═══════════════════════════════════════════════════════════╝');
-    console.log('');
-
+   
     // 🎯 PASO 1: Crear instancia del microkernel
     const microkernel = new Microkernel(config.port);
 

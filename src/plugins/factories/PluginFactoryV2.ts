@@ -1,4 +1,4 @@
-/*import { PluginFactory } from '../../core/factories/PluginFactory';
+import { PluginFactory } from '../../core/factories/PluginFactory';
 import { IAuthPlugin } from '../../core/interfaces/IAuthPlugin';
 import { IDatabasePlugin } from '../../core/interfaces/IDatabasePlugin';
 import { ICategoriasPlugin } from '../../core/interfaces/ICategoriasPlugin';
@@ -21,7 +21,7 @@ import { ProveedoresPluginV2 } from '../v2/proveedores/ProveedoresPluginV2';
  * - Database: Optimizaciones y caching
  * - Endpoints de dashboard y estadísticas
  * - Funcionalidades avanzadas
- *//*
+ */
 export class PluginFactoryV2 extends PluginFactory {
   private databaseInstance: IDatabasePlugin | null = null;
 
@@ -60,4 +60,4 @@ export class PluginFactoryV2 extends PluginFactory {
     const dbPlugin = this.createDatabasePlugin();
     return new ProveedoresPluginV2(dbPlugin);
   }
-}*/
+}

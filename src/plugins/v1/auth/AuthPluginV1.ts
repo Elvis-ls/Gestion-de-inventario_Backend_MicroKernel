@@ -1,5 +1,3 @@
-// src/plugins/auth/auth.plugin.ts
-
 import { IAuthPlugin, AuthResult } from '../../../core/interfaces/IAuthPlugin';
 import { EventBus } from '../../../core/EventBus';
 import { Router } from 'express';
