@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { CategoriasController } from './CategoriasControllerV2';
-import { AuthMiddleware } from '../auth/middleware/authMiddleware';
+import { AuthMiddleware } from '../auth/authMiddleware';
 
 const router = Router();
 

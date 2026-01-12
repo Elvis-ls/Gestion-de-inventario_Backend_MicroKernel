@@ -1,13 +1,13 @@
 import categoriasRoutes from './CategoriasRoutesV2';
 import { CategoriasService } from './CategoriasServiceV2';
 
-export interface CategoriasPlugin {
+export interface CategoriasPluginV2 {
   name: string;
   version: string;
   initialize: (core: any) => Promise<void>;
 }
 
-const categoriasPlugin: CategoriasPlugin = {
+const categoriasPlugin: CategoriasPluginV2 = {
   name: 'categorias',
   version: '2.0.0',
 

@@ -1,13 +1,13 @@
 import proveedoresRoutes from './ProveedoresRoutesV2';
 import { ProveedoresService } from './ProveedoresServiceV2';
 
-export interface ProveedoresPlugin {
+export interface ProveedoresPluginV2 {
   name: string;
   version: string;
   initialize: (core: any) => Promise<void>;
 }
 
-const proveedoresPlugin: ProveedoresPlugin = {
+const proveedoresPlugin: ProveedoresPluginV2 = {
   name: 'proveedores',
   version: '2.0.0',
 

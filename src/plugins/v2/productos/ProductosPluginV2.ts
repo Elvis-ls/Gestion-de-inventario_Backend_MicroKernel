@@ -1,13 +1,13 @@
 import productosRoutes from './ProductosRoutesV2';
 import { ProductosService } from './ProductosServiceV2';
 
-export interface ProductosPlugin {
+export interface ProductosPluginV2 {
   name: string;
   version: string;
   initialize: (core: any) => Promise<void>;
 }
 
-const productosPlugin: ProductosPlugin = {
+const productosPlugin: ProductosPluginV2 = {
   name: 'productos',
   version: '2.0.0',
 

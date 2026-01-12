@@ -1,12 +1,12 @@
 import { Pool } from 'pg';
 
-export interface DatabasePlugin {
+export interface DatabasePluginV2 {
   name: string;
   version: string;
   initialize: (core: any) => Promise<void>;
 }
 
-const databasePlugin: DatabasePlugin = {
+const databasePlugin: DatabasePluginV2 = {
   name: 'database',
   version: '2.0.0',
 
