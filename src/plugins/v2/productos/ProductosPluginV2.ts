@@ -2,9 +2,9 @@ import { Plugin } from '../../core/types';
 import { EventBus } from '../../../core/EventBus';
 import { Router } from 'express';
 import { DatabaseService } from '../database/database.service';
-import { ProductosService } from './productos.service';
-import { ProductosController } from './productos.controller';
-import { createProductosRoutes } from './productos.routes';
+import { ProductosService } from './ProductosServiceV2';
+import { ProductosController } from './ProductosControllerV2';
+import { createProductosRoutes } from './ProductosRoutesV2';
 
 /**
  * Plugin de Productos

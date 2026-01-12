@@ -5,6 +5,14 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'refresh_secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
+export interface TokenPayload {
+  sub: number;        // userId
+  usuario: string;
+  tokenType?: string; // solo presente en el refresh token
+  iat?: number;       // issued at (opcional, agregado por JWT)
+  exp?: number;       // expiration (opcional, agregado por JWT)
+}
+
 export class JwtService {
   static generateTokens(userId: number, usuario: string) {
     const accessToken = jwt.sign(

@@ -2,9 +2,9 @@ import { Plugin } from '../../core/types';
 import { EventBus } from '../../core/EventBus';
 import { Router } from 'express';
 import { DatabaseService } from '../database/database.service';
-import { CategoriasService } from './categorias.service';
-import { CategoriasController } from './categorias.controller';
-import { createCategoriasRoutes } from './categorias.routes';
+import { CategoriasService } from './CategoriasServiceV2';
+import { CategoriasController } from './CategoriasControllerV2';
+import { createCategoriasRoutes } from './CategoriasRoutesV2';
 
 /**
  * Plugin de Categorías

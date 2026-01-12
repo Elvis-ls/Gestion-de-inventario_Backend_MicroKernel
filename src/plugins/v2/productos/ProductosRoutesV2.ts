@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ProductosController } from './productos.controller';
+import { ProductosController } from './ProductosControllerV2';
 
 /**
  * Configura las rutas de productos

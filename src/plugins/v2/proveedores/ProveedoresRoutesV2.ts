@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ProveedoresController } from './proveedores.controller';
+import { ProveedoresController } from './ProveedoresControllerV2';
 
 /**
  * Configura las rutas de proveedores

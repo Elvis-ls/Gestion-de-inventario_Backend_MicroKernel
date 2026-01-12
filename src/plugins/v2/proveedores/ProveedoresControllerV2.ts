@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ProveedoresService } from './proveedores.service';
+import { ProveedoresService } from './ProveedoresServiceV2';
 
 /**
  * Controlador de Proveedores

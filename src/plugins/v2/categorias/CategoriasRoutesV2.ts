@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { CategoriasController } from './categorias.controller';
+import { CategoriasController } from './CategoriasControllerV2';
 
 /**
  * Configura las rutas de categorías

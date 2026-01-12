@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ProductosService } from './productos.service';
+import { ProductosService } from './ProductosServiceV2';
 
 /**
  * Controlador de Productos

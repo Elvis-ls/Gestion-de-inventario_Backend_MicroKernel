@@ -2,9 +2,9 @@ import { Plugin } from '../../core/types';
 import { EventBus } from '../../../core/EventBus';
 import { Router } from 'express';
 import { DatabaseService } from '../database/database.service';
-import { ProveedoresService } from './proveedores.service';
-import { ProveedoresController } from './proveedores.controller';
-import { createProveedoresRoutes } from './proveedores.routes';
+import { ProveedoresService } from './ProveedoresServiceV2';
+import { ProveedoresController } from './ProveedoresControllerV2';
+import { createProveedoresRoutes } from './ProveedoresRoutesV2';
 
 /**
  * Plugin de Proveedores

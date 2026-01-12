@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CategoriasService } from './categorias.service';
+import { CategoriasService } from './CategoriasServiceV2';
 
 /**
  * Controlador de Categorías
