@@ -9,6 +9,7 @@ import { createCategoriasRoutes } from './CategoriasRoutesV2';
 /**
  * Plugin de Categorías
  */
+
 export class CategoriasPlugin implements Plugin {
   public name = 'categorias';
   public version = '1.0.0';
