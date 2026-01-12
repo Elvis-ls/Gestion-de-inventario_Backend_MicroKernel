@@ -1,6 +1,6 @@
 // src/plugins/auth/auth.service.ts
 
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import { AdminDB } from './auth.model';
 import { IAuthStrategy } from './strategies/IAuthStrategy';
 

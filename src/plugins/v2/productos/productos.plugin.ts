@@ -1,5 +1,5 @@
 import { Plugin } from '../../core/types';
-import { EventBus } from '../../core/EventBus';
+import { EventBus } from '../../../core/EventBus';
 import { Router } from 'express';
 import { DatabaseService } from '../database/database.service';
 import { ProductosService } from './productos.service';

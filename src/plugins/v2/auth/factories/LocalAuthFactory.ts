@@ -3,7 +3,7 @@ import { IAuthStrategy } from '../strategies/IAuthStrategy';
 import { IAuthValidator } from '../validators/IAuthValidator';
 import { LocalAuthStrategy } from '../strategies/LocalAuthStrategy';
 import { LocalAuthValidator } from '../validators/LocalAuthValidator';
-import { DatabaseService } from '../../database/database.service';
+import { DatabaseService } from '../../../database/database.service';
 
 /**
  * Concrete Factory para autenticación local

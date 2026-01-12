@@ -3,7 +3,7 @@ import { IAuthStrategy } from '../strategies/IAuthStrategy';
 import { IAuthValidator } from '../validators/IAuthValidator';
 import { JWTAuthStrategy } from '../strategies/JWTAuthStrategy';
 import { JWTAuthValidator } from '../validators/JWTAuthValidator';
-import { DatabaseService } from '../../database/database.service';
+import { DatabaseService } from '../../../database/database.service';
 
 /**
  * Concrete Factory para autenticación JWT

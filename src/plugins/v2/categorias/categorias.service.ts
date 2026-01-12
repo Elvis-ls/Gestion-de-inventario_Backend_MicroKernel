@@ -1,4 +1,4 @@
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import { Categoria, CategoriaConEstado } from './categorias.model';
 
 /**

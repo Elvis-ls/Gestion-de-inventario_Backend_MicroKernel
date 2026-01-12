@@ -1,5 +1,5 @@
 import { IAuthStrategy, AuthCredentials, AuthResult } from './IAuthStrategy';
-import { DatabaseService } from '../../database/database.service';
+import { DatabaseService } from '../../../database/database.service';
 
 /**
  * Estrategia de autenticación local (usuario/contraseña en BD)

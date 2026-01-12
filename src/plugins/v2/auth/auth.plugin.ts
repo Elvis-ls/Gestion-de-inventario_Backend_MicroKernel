@@ -1,9 +1,9 @@
 // src/plugins/auth/auth.plugin.ts
 
 import { Plugin } from '../../core/types';
-import { EventBus } from '../../core/EventBus';
+import { EventBus } from '../../../core/EventBus';
 import { Router } from 'express';
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { createAuthRoutes } from './auth.routes';
