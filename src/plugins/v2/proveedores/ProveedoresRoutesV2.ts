@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import { ProveedoresController } from './ProveedoresControllerV2';
+import { AuthMiddleware } from '../auth/middleware/authMiddleware';
 
-/**
- * Configura las rutas de proveedores
- */
-export const createProveedoresRoutes = (controller: ProveedoresController): Router => {
-  const router = Router();
+const router = Router();
 
-  router.get('/', controller.getAll);
-  router.get('/:id', controller.getById);
-  router.post('/', controller.create);
-  router.put('/:id', controller.update);
-  router.delete('/:id', controller.delete);
+// V2: Todas las rutas requieren autenticación JWT
+router.use(AuthMiddleware.authenticate);
 
-  return router;
-};
+router.get('/', ProveedoresController.getAll);
+router.get('/search', ProveedoresController.search); // V2: Nueva ruta para búsqueda
+router.get('/count', ProveedoresController.getCount); // V2: Nueva ruta para conteo
+router.get('/:id', ProveedoresController.getById);
+router.post('/', ProveedoresController.create);
+router.put('/:id', ProveedoresController.update);
+router.delete('/:id', ProveedoresController.delete);
+
+export default router;

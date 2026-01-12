@@ -1,47 +1,32 @@
-import { Plugin } from '../../core/types';
-import { EventBus } from '../../../core/EventBus';
-import { Router } from 'express';
-import { DatabaseService } from '../database/database.service';
+import proveedoresRoutes from './ProveedoresRoutesV2';
 import { ProveedoresService } from './ProveedoresServiceV2';
-import { ProveedoresController } from './ProveedoresControllerV2';
-import { createProveedoresRoutes } from './ProveedoresRoutesV2';
 
-/**
- * Plugin de Proveedores
- */
-export class ProveedoresPlugin implements Plugin {
-  public name = 'proveedores';
-  public version = '1.0.0';
-  
-  private service!: ProveedoresService;
-  private controller!: ProveedoresController;
-  private router!: Router;
-
-  dependencies(): string[] {
-    return ['database'];
-  }
-
-  async initialize(eventBus: EventBus): Promise<void> {
-    console.log(' [ProveedoresPlugin] Inicializando...');
-
-    const dbService = DatabaseService.getInstance();
-
-    this.service = new ProveedoresService(dbService);
-    this.controller = new ProveedoresController(this.service);
-    this.router = createProveedoresRoutes(this.controller);
-
-    eventBus.on('proveedor:created', (data) => {
-      console.log(' [ProveedoresPlugin] Nuevo proveedor creado:', data);
-    });
-
-    console.log(' [ProveedoresPlugin] Inicializado correctamente');
-  }
-
-  getRoutes(): Router {
-    return this.router;
-  }
-
-  async shutdown(): Promise<void> {
-    console.log(' [ProveedoresPlugin] Cerrando...');
-  }
+export interface ProveedoresPlugin {
+  name: string;
+  version: string;
+  initialize: (core: any) => Promise<void>;
 }
+
+const proveedoresPlugin: ProveedoresPlugin = {
+  name: 'proveedores',
+  version: '2.0.0',
+
+  initialize: async (core: any) => {
+    try {
+      if (!core.database) {
+        throw new Error('El plugin de base de datos debe inicializarse primero');
+      }
+
+      ProveedoresService.initialize(core.database);
+
+      core.app.use('/api/v2/proveedores', proveedoresRoutes);
+
+      console.log('✅ Plugin Proveedores v2 inicializado');
+    } catch (error) {
+      console.error('❌ Error al inicializar plugin Proveedores v2:', error);
+      throw error;
+    }
+  },
+};
+
+export default proveedoresPlugin;

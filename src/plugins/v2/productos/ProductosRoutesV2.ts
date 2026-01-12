@@ -1,25 +1,18 @@
 import { Router } from 'express';
 import { ProductosController } from './ProductosControllerV2';
+import { AuthMiddleware } from '../auth/middleware/authMiddleware';
 
-/**
- * Configura las rutas de productos
- */
-export const createProductosRoutes = (controller: ProductosController): Router => {
-  const router = Router();
+const router = Router();
 
-  //  RUTAS DE DASHBOARD (deben ir PRIMERO, antes de /:id)
-  router.get('/dashboard/estadisticas', controller.getEstadisticas);
-  router.get('/dashboard/mas-movidos', controller.getProductosMasMovidos);
-  router.get('/dashboard/proximos-vencer', controller.getProductosProximosVencer);
-  router.get('/dashboard/top-valor', controller.getTopProductosPorValor);
-  router.get('/dashboard/resumen-categoria', controller.getResumenPorCategoria);
+// V2: Todas las rutas requieren autenticación JWT
+router.use(AuthMiddleware.authenticate);
 
-  router.get('/', controller.getAll);
-  router.get('/bajo-stock', controller.getBajoStock); // Debe ir antes de /:id
-  router.get('/:id', controller.getById);
-  router.post('/', controller.create);
-  router.put('/:id', controller.update);
-  router.delete('/:id', controller.delete);
+router.get('/', ProductosController.getAll);
+router.get('/bajo-stock', ProductosController.getBajoStock);
+router.get('/search', ProductosController.search); // V2: Nueva ruta para búsqueda
+router.get('/:id', ProductosController.getById);
+router.post('/', ProductosController.create);
+router.put('/:id', ProductosController.update);
+router.delete('/:id', ProductosController.delete);
 
-  return router;
-};
+export default router;

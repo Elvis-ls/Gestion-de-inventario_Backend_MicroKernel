@@ -1,80 +1,94 @@
 import { Request, Response } from 'express';
 import { ProveedoresService } from './ProveedoresServiceV2';
 
-/**
- * Controlador de Proveedores
- */
 export class ProveedoresController {
-  constructor(private service: ProveedoresService) {}
-
-  getAll = async (_req: Request, res: Response): Promise<void> => {
+  static async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const proveedores = await this.service.getAll();
+      const proveedores = await ProveedoresService.getAll();
+
       res.json({
         success: true,
-        data: proveedores
+        data: proveedores,
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en getAll:', error);
       res.status(500).json({
         success: false,
-        message: 'Error obteniendo proveedores'
+        message: error instanceof Error ? error.message : 'Error al obtener proveedores',
       });
     }
-  };
+  }
 
-  getById = async (req: Request, res: Response): Promise<void> => {
+  static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const proveedor = await this.service.getById(id);
-      
+      const { id } = req.params;
+      const proveedor = await ProveedoresService.getById(Number(id));
+
       if (!proveedor) {
         res.status(404).json({
           success: false,
-          message: 'Proveedor no encontrado'
+          message: 'Proveedor no encontrado',
         });
         return;
       }
 
       res.json({
         success: true,
-        data: proveedor
+        data: proveedor,
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en getById:', error);
       res.status(500).json({
         success: false,
-        message: 'Error obteniendo proveedor'
+        message: error instanceof Error ? error.message : 'Error al obtener proveedor',
       });
     }
-  };
+  }
 
-  create = async (req: Request, res: Response): Promise<void> => {
+  static async create(req: Request, res: Response): Promise<void> {
     try {
-      const proveedor = await this.service.create(req.body);
+      const { nombre, contacto } = req.body;
+
+      if (!nombre || !contacto) {
+        res.status(400).json({
+          success: false,
+          message: 'Nombre y contacto son requeridos',
+        });
+        return;
+      }
+
+      const proveedor = await ProveedoresService.create({ nombre, contacto });
+
       res.status(201).json({
         success: true,
         data: proveedor,
-        message: 'Proveedor creado exitosamente'
+        message: 'Proveedor creado con éxito',
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en create:', error);
       res.status(500).json({
         success: false,
-        message: 'Error creando proveedor'
+        message: error instanceof Error ? error.message : 'Error al crear proveedor',
       });
     }
-  };
+  }
 
-  update = async (req: Request, res: Response): Promise<void> => {
+  static async update(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const proveedor = await this.service.update(id, req.body);
-      
+      const { id } = req.params;
+      const { nombre, contacto } = req.body;
+
+      if (!nombre || !contacto) {
+        res.status(400).json({
+          success: false,
+          message: 'Nombre y contacto son requeridos',
+        });
+        return;
+      }
+
+      const proveedor = await ProveedoresService.update(Number(id), { nombre, contacto });
+
       if (!proveedor) {
         res.status(404).json({
           success: false,
-          message: 'Proveedor no encontrado'
+          message: 'Proveedor no encontrado',
         });
         return;
       }
@@ -82,115 +96,82 @@ export class ProveedoresController {
       res.json({
         success: true,
         data: proveedor,
-        message: 'Proveedor actualizado exitosamente'
+        message: 'Proveedor actualizado con éxito',
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en update:', error);
       res.status(500).json({
         success: false,
-        message: 'Error actualizando proveedor'
+        message: error instanceof Error ? error.message : 'Error al actualizar proveedor',
       });
     }
-  };
+  }
 
-  delete = async (req: Request, res: Response): Promise<void> => {
+  static async delete(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const deleted = await this.service.delete(id);
-      
+      const { id } = req.params;
+      const deleted = await ProveedoresService.delete(Number(id));
+
       if (!deleted) {
         res.status(404).json({
           success: false,
-          message: 'Proveedor no encontrado'
+          message: 'Proveedor no encontrado',
         });
         return;
       }
 
       res.json({
         success: true,
-        message: 'Proveedor eliminado exitosamente'
+        message: 'Proveedor eliminado con éxito',
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en delete:', error);
       res.status(500).json({
         success: false,
-        message: 'Error eliminando proveedor'
+        message: error instanceof Error ? error.message : 'Error al eliminar proveedor',
       });
     }
-  };
+  }
 
-  getEstadisticas = async (_req: Request, res: Response): Promise<void> => {
+  // V2: Nuevo endpoint para buscar proveedores
+  static async search(req: Request, res: Response): Promise<void> {
     try {
-      const estadisticas = await this.service.getEstadisticas();
+      const { q } = req.query;
+
+      if (!q) {
+        res.status(400).json({
+          success: false,
+          message: 'El parámetro q es requerido',
+        });
+        return;
+      }
+
+      const proveedores = await ProveedoresService.search(q as string);
+
       res.json({
         success: true,
-        data: estadisticas
+        data: proveedores,
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en getEstadisticas:', error);
       res.status(500).json({
         success: false,
-        message: 'Error obteniendo estadísticas'
+        message: error instanceof Error ? error.message : 'Error al buscar proveedores',
       });
     }
-  };
+  }
 
-  /**
-   *  GET /api/proveedores/dashboard/con-mas-productos
-   */
-  getProveedoresConMasProductos = async (_req: Request, res: Response): Promise<void> => {
+  // V2: Nuevo endpoint para obtener el conteo total
+  static async getCount(req: Request, res: Response): Promise<void> {
     try {
-      const proveedores = await this.service.getProveedoresConMasProductos();
+      const count = await ProveedoresService.getCount();
+
       res.json({
         success: true,
-        data: proveedores
+        data: { total: count },
       });
     } catch (error) {
-      console.error('[ProveedoresController] Error en getProveedoresConMasProductos:', error);
       res.status(500).json({
         success: false,
-        message: 'Error obteniendo proveedores'
+        message: error instanceof Error ? error.message : 'Error al contar proveedores',
       });
     }
-  };
-
-  /**
-   *  GET /api/proveedores/dashboard/top-valor
-   */
-  getTopProveedoresPorValor = async (_req: Request, res: Response): Promise<void> => {
-    try {
-      const top = await this.service.getTopProveedoresPorValor();
-      res.json({
-        success: true,
-        data: top
-      });
-    } catch (error) {
-      console.error('[ProveedoresController] Error en getTopProveedoresPorValor:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error obteniendo top proveedores'
-      });
-    }
-  };
-
-  /**
-   *  GET /api/proveedores/:id/productos
-   */
-  getProductosPorProveedor = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const id = parseInt(req.params.id);
-      const productos = await this.service.getProductosPorProveedor(id);
-      res.json({
-        success: true,
-        data: productos,
-        count: productos.length
-      });
-    } catch (error) {
-      console.error('[ProveedoresController] Error en getProductosPorProveedor:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error obteniendo productos del proveedor'
-      });
-    }
-  };
+  }
 }

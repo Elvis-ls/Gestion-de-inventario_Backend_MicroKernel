@@ -1,93 +1,94 @@
 import { Request, Response } from 'express';
 import { CategoriasService } from './CategoriasServiceV2';
 
-/**
- * Controlador de Categorías
- * Maneja las peticiones HTTP
- */
 export class CategoriasController {
-  constructor(private service: CategoriasService) {}
-
-  /**
-   * GET /api/categorias
-   */
-  getAll = async (_req: Request, res: Response): Promise<void> => {
+  static async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const categorias = await this.service.getAll();
+      const categorias = await CategoriasService.getAll();
+
       res.json({
         success: true,
-        data: categorias
+        data: categorias,
       });
     } catch (error) {
-      console.error('[CategoriasController] Error en getAll:', error);
       res.status(500).json({
         success: false,
-        message: 'Error obteniendo categorías'
+        message: error instanceof Error ? error.message : 'Error al obtener categorías',
       });
     }
-  };
+  }
 
-  /**
-   * GET /api/categorias/:id
-   */
-  getById = async (req: Request, res: Response): Promise<void> => {
+  static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const categoria = await this.service.getById(id);
-      
+      const { id } = req.params;
+      const categoria = await CategoriasService.getById(Number(id));
+
       if (!categoria) {
         res.status(404).json({
           success: false,
-          message: 'Categoría no encontrada'
+          message: 'Categoría no encontrada',
         });
         return;
       }
 
       res.json({
         success: true,
-        data: categoria
+        data: categoria,
       });
     } catch (error) {
-      console.error('[CategoriasController] Error en getById:', error);
       res.status(500).json({
         success: false,
-        message: 'Error obteniendo categoría'
+        message: error instanceof Error ? error.message : 'Error al obtener categoría',
       });
     }
-  };
+  }
 
-  /**
-   * POST /api/categorias
-   */
-  create = async (req: Request, res: Response): Promise<void> => {
+  static async create(req: Request, res: Response): Promise<void> {
     try {
-      const categoria = await this.service.create(req.body);
+      const { nombre } = req.body;
+
+      if (!nombre) {
+        res.status(400).json({
+          success: false,
+          message: 'El nombre es requerido',
+        });
+        return;
+      }
+
+      const categoria = await CategoriasService.create(nombre);
+
       res.status(201).json({
         success: true,
         data: categoria,
-        message: 'Categoría creada exitosamente'
+        message: 'Categoría creada con éxito',
       });
     } catch (error) {
-      console.error('[CategoriasController] Error en create:', error);
       res.status(500).json({
         success: false,
-        message: 'Error creando categoría'
+        message: error instanceof Error ? error.message : 'Error al crear categoría',
       });
     }
-  };
+  }
 
-  /**
-   * PUT /api/categorias/:id
-   */
-  update = async (req: Request, res: Response): Promise<void> => {
+  static async update(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const categoria = await this.service.update(id, req.body);
-      
+      const { id } = req.params;
+      const { nombre } = req.body;
+
+      if (!nombre) {
+        res.status(400).json({
+          success: false,
+          message: 'El nombre es requerido',
+        });
+        return;
+      }
+
+      const categoria = await CategoriasService.update(Number(id), nombre);
+
       if (!categoria) {
         res.status(404).json({
           success: false,
-          message: 'Categoría no encontrada'
+          message: 'Categoría no encontrada',
         });
         return;
       }
@@ -95,100 +96,55 @@ export class CategoriasController {
       res.json({
         success: true,
         data: categoria,
-        message: 'Categoría actualizada exitosamente'
+        message: 'Categoría actualizada con éxito',
       });
     } catch (error) {
-      console.error('[CategoriasController] Error en update:', error);
       res.status(500).json({
         success: false,
-        message: 'Error actualizando categoría'
+        message: error instanceof Error ? error.message : 'Error al actualizar categoría',
       });
     }
-  };
+  }
 
-  /**
-   * DELETE /api/categorias/:id
-   */
-  delete = async (req: Request, res: Response): Promise<void> => {
+  static async delete(req: Request, res: Response): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const deleted = await this.service.delete(id);
-      
+      const { id } = req.params;
+      const deleted = await CategoriasService.delete(Number(id));
+
       if (!deleted) {
         res.status(404).json({
           success: false,
-          message: 'Categoría no encontrada'
+          message: 'Categoría no encontrada',
         });
         return;
       }
 
       res.json({
         success: true,
-        message: 'Categoría eliminada exitosamente'
+        message: 'Categoría eliminada con éxito',
       });
     } catch (error) {
-      console.error('[CategoriasController] Error en delete:', error);
       res.status(500).json({
         success: false,
-        message: 'Error eliminando categoría'
+        message: error instanceof Error ? error.message : 'Error al eliminar categoría',
       });
     }
-  };
-
-  /**
- * GET /api/categorias/dashboard/estadisticas
- */
-getEstadisticas = async (_req: Request, res: Response): Promise<void> => {
-  try {
-    const estadisticas = await this.service.getEstadisticas();
-    res.json({
-      success: true,
-      data: estadisticas
-    });
-  } catch (error) {
-    console.error('[CategoriasController] Error en getEstadisticas:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error obteniendo estadísticas de categorías'
-    });
   }
-};
 
-/**
- * GET /api/categorias/dashboard/con-productos
- */
-getCategoriasConProductos = async (_req: Request, res: Response): Promise<void> => {
-  try {
-    const categorias = await this.service.getCategoriasConProductos();
-    res.json({
-      success: true,
-      data: categorias
-    });
-  } catch (error) {
-    console.error('[CategoriasController] Error en getCategoriasConProductos:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error obteniendo categorías con productos'
-    });
-  }
-};
+  // V2: Nuevo endpoint para obtener categorías con conteo de productos
+  static async getWithProductCount(req: Request, res: Response): Promise<void> {
+    try {
+      const categorias = await CategoriasService.getWithProductCount();
 
-/**
- * GET /api/categorias/dashboard/top-valor
- */
-getTopCategoriasPorValor = async (_req: Request, res: Response): Promise<void> => {
-  try {
-    const topCategorias = await this.service.getTopCategoriasPorValor();
-    res.json({
-      success: true,
-      data: topCategorias
-    });
-  } catch (error) {
-    console.error('[CategoriasController] Error en getTopCategoriasPorValor:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error obteniendo top categorías por valor'
-    });
+      res.json({
+        success: true,
+        data: categorias,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Error al obtener categorías',
+      });
+    }
   }
-};
 }

@@ -1,51 +1,32 @@
-import { Plugin } from '../../core/types';
-import { EventBus } from '../../core/EventBus';
-import { Router } from 'express';
-import { DatabaseService } from '../database/database.service';
+import categoriasRoutes from './CategoriasRoutesV2';
 import { CategoriasService } from './CategoriasServiceV2';
-import { CategoriasController } from './CategoriasControllerV2';
-import { createCategoriasRoutes } from './CategoriasRoutesV2';
 
-/**
- * Plugin de Categorías
- */
-
-export class CategoriasPlugin implements Plugin {
-  public name = 'categorias';
-  public version = '1.0.0';
-  
-  private service!: CategoriasService;
-  private controller!: CategoriasController;
-  private router!: Router;
-
-  dependencies(): string[] {
-    return ['database']; // Depende del plugin de database
-  }
-
-  async initialize(eventBus: EventBus): Promise<void> {
-    console.log(' [CategoriasPlugin] Inicializando...');
-
-    // Obtener servicio de base de datos
-    const dbService = DatabaseService.getInstance();
-
-    // Inicializar capas
-    this.service = new CategoriasService(dbService);
-    this.controller = new CategoriasController(this.service);
-    this.router = createCategoriasRoutes(this.controller);
-
-    // Escuchar eventos (ejemplo)
-    eventBus.on('categoria:created', (data) => {
-      console.log(' [CategoriasPlugin] Nueva categoría creada:', data);
-    });
-
-    console.log(' [CategoriasPlugin] Inicializado correctamente');
-  }
-
-  getRoutes(): Router {
-    return this.router;
-  }
-
-  async shutdown(): Promise<void> {
-    console.log(' [CategoriasPlugin] Cerrando...');
-  }
+export interface CategoriasPlugin {
+  name: string;
+  version: string;
+  initialize: (core: any) => Promise<void>;
 }
+
+const categoriasPlugin: CategoriasPlugin = {
+  name: 'categorias',
+  version: '2.0.0',
+
+  initialize: async (core: any) => {
+    try {
+      if (!core.database) {
+        throw new Error('El plugin de base de datos debe inicializarse primero');
+      }
+
+      CategoriasService.initialize(core.database);
+
+      core.app.use('/api/v2/categorias', categoriasRoutes);
+
+      console.log('✅ Plugin Categorías v2 inicializado');
+    } catch (error) {
+      console.error('❌ Error al inicializar plugin Categorías v2:', error);
+      throw error;
+    }
+  },
+};
+
+export default categoriasPlugin;

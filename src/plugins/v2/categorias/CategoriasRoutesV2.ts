@@ -1,24 +1,17 @@
 import { Router } from 'express';
 import { CategoriasController } from './CategoriasControllerV2';
+import { AuthMiddleware } from '../auth/middleware/authMiddleware';
 
-/**
- * Configura las rutas de categorías
- */
-export const createCategoriasRoutes = (controller: CategoriasController): Router => {
-  const router = Router();
+const router = Router();
 
+// V2: Todas las rutas requieren autenticación JWT
+router.use(AuthMiddleware.authenticate);
 
-  //  RUTAS DE DASHBOARD (deben ir PRIMERO, antes de /:id)
-  router.get('/dashboard/estadisticas', controller.getEstadisticas);
-  router.get('/dashboard/con-productos', controller.getCategoriasConProductos);
-  router.get('/dashboard/top-valor', controller.getTopCategoriasPorValor);
+router.get('/', CategoriasController.getAll);
+router.get('/with-count', CategoriasController.getWithProductCount); // V2: Nueva ruta
+router.get('/:id', CategoriasController.getById);
+router.post('/', CategoriasController.create);
+router.put('/:id', CategoriasController.update);
+router.delete('/:id', CategoriasController.delete);
 
-  
-  router.get('/', controller.getAll);
-  router.get('/:id', controller.getById);
-  router.post('/', controller.create);
-  router.put('/:id', controller.update);
-  router.delete('/:id', controller.delete);
-
-  return router;
-};
+export default router;

@@ -1,47 +1,32 @@
-import { Plugin } from '../../core/types';
-import { EventBus } from '../../../core/EventBus';
-import { Router } from 'express';
-import { DatabaseService } from '../database/database.service';
+import productosRoutes from './ProductosRoutesV2';
 import { ProductosService } from './ProductosServiceV2';
-import { ProductosController } from './ProductosControllerV2';
-import { createProductosRoutes } from './ProductosRoutesV2';
 
-/**
- * Plugin de Productos
- */
-export class ProductosPlugin implements Plugin {
-  public name = 'productos';
-  public version = '1.0.0';
-  
-  private service!: ProductosService;
-  private controller!: ProductosController;
-  private router!: Router;
-
-  dependencies(): string[] {
-    return ['database'];
-  }
-
-  async initialize(eventBus: EventBus): Promise<void> {
-    console.log(' [ProductosPlugin] Inicializando...');
-
-    const dbService = DatabaseService.getInstance();
-
-    this.service = new ProductosService(dbService);
-    this.controller = new ProductosController(this.service);
-    this.router = createProductosRoutes(this.controller);
-
-    eventBus.on('producto:created', (data) => {
-      console.log(' [ProductosPlugin] Nuevo producto creado:', data);
-    });
-
-    console.log(' [ProductosPlugin] Inicializado correctamente');
-  }
-
-  getRoutes(): Router {
-    return this.router;
-  }
-
-  async shutdown(): Promise<void> {
-    console.log(' [ProductosPlugin] Cerrando...');
-  }
+export interface ProductosPlugin {
+  name: string;
+  version: string;
+  initialize: (core: any) => Promise<void>;
 }
+
+const productosPlugin: ProductosPlugin = {
+  name: 'productos',
+  version: '2.0.0',
+
+  initialize: async (core: any) => {
+    try {
+      if (!core.database) {
+        throw new Error('El plugin de base de datos debe inicializarse primero');
+      }
+
+      ProductosService.initialize(core.database);
+
+      core.app.use('/api/v2/productos', productosRoutes);
+
+      console.log('✅ Plugin Productos v2 inicializado');
+    } catch (error) {
+      console.error('❌ Error al inicializar plugin Productos v2:', error);
+      throw error;
+    }
+  },
+};
+
+export default productosPlugin;
