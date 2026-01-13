@@ -44,13 +44,13 @@ export class PluginFactoryV2 extends PluginFactory {
   }
 
   createCategoriasPlugin(): ICategoriasPlugin {
-    console.log(' [FactoryV2] Creando CategoriasPluginV2 (con Dashboard)...');
+    console.log(' [FactoryV2] Creando CategoriasPluginV2');
     const dbPlugin = this.createDatabasePlugin();
     return new CategoriasPluginV2(dbPlugin);
   }
 
   createProductosPlugin(): IProductosPlugin {
-    console.log(' [FactoryV2] Creando ProductosPluginV2 (con Dashboard)...');
+    console.log(' [FactoryV2] Creando ProductosPluginV2');
     const dbPlugin = this.createDatabasePlugin();
     return new ProductosPluginV2(dbPlugin);
   }
