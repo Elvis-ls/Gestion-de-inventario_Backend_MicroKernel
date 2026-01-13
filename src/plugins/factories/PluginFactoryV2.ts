@@ -31,32 +31,32 @@ export class PluginFactoryV2 extends PluginFactory {
 
   createDatabasePlugin(): IDatabasePlugin {
     if (!this.databaseInstance) {
-      console.log('🏭 [FactoryV2] Creando DatabasePluginV2...');
+      console.log(' [FactoryV2] Creando DatabasePluginV2...');
       this.databaseInstance = DatabasePluginV2.getInstance();
     }
     return this.databaseInstance;
   }
 
   createAuthPlugin(): IAuthPlugin {
-    console.log('🏭 [FactoryV2] Creando AuthPluginV2 (JWT)...');
+    console.log(' [FactoryV2] Creando AuthPluginV2 (JWT)...');
     const dbPlugin = this.createDatabasePlugin();
     return new AuthPluginV2(dbPlugin);
   }
 
   createCategoriasPlugin(): ICategoriasPlugin {
-    console.log('🏭 [FactoryV2] Creando CategoriasPluginV2 (con Dashboard)...');
+    console.log(' [FactoryV2] Creando CategoriasPluginV2 (con Dashboard)...');
     const dbPlugin = this.createDatabasePlugin();
     return new CategoriasPluginV2(dbPlugin);
   }
 
   createProductosPlugin(): IProductosPlugin {
-    console.log('🏭 [FactoryV2] Creando ProductosPluginV2 (con Dashboard)...');
+    console.log(' [FactoryV2] Creando ProductosPluginV2 (con Dashboard)...');
     const dbPlugin = this.createDatabasePlugin();
     return new ProductosPluginV2(dbPlugin);
   }
 
   createProveedoresPlugin(): IProveedoresPlugin {
-    console.log('🏭 [FactoryV2] Creando ProveedoresPluginV2 (con Dashboard)...');
+    console.log(' [FactoryV2] Creando ProveedoresPluginV2 (con Dashboard)...');
     const dbPlugin = this.createDatabasePlugin();
     return new ProveedoresPluginV2(dbPlugin);
   }
