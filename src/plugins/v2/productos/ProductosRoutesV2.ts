@@ -9,8 +9,8 @@ export const createProductosRoutesV2 = (controller: ProductosControllerV2): Rout
   router.get('/bajo-stock', controller.getBajoStock);
   router.get('/:id', controller.getById);
   router.post('/', authenticateToken, controller.create);
-  router.put('/:id', controller.update);
-  router.delete('/:id', controller.delete);
+  router.put('/:id', authenticateToken, controller.update);
+  router.delete('/:id', authenticateToken, controller.delete);
   
   return router;
 };
