@@ -62,6 +62,6 @@ export class ProductosPluginV1 implements IProductosPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('📦 [ProductosV1] Cerrando...');
+    console.log(' [ProductosV1] Cerrando...');
   }
 }

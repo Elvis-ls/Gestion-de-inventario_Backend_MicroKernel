@@ -56,7 +56,7 @@ export class PluginFactoryV1 extends PluginFactory {
   }
 
   createProveedoresPlugin(): IProveedoresPlugin {
-    console.log('🏭 [FactoryV1] Creando ProveedoresPluginV1...');
+    console.log(' [FactoryV1] Creando ProveedoresPluginV1...');
     const dbPlugin = this.createDatabasePlugin();
     return new ProveedoresPluginV1(dbPlugin);
   }

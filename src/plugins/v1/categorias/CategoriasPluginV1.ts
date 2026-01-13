@@ -20,13 +20,13 @@ export class CategoriasPluginV1 implements ICategoriasPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('📁 [CategoriasV1] Inicializando...');
+    console.log(' [CategoriasV1] Inicializando...');
     
     this.service = new CategoriasServiceV1(this.dbPlugin);
     this.controller = new CategoriasControllerV1(this.service);
     this.router = createCategoriasRoutesV1(this.controller);
     
-    console.log('✓ [CategoriasV1] Inicializado');
+    console.log(' [CategoriasV1] Inicializado');
   }
 
   async getAll(): Promise<Categoria[]> {
@@ -58,6 +58,6 @@ export class CategoriasPluginV1 implements ICategoriasPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('📁 [CategoriasV1] Cerrando...');
+    console.log(' [CategoriasV1] Cerrando...');
   }
 }

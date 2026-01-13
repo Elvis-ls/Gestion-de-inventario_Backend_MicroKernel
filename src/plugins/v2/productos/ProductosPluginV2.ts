@@ -20,13 +20,13 @@ export class ProductosPluginV2 implements IProductosPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('📦 [ProductosV1] Inicializando...');
+    console.log(' [ProductosV1] Inicializando...');
     
     this.service = new ProductosServiceV2(this.dbPlugin);
     this.controller = new ProductosControllerV2(this.service);
     this.router = createProductosRoutesV2(this.controller);
     
-    console.log('✓ [ProductosV1] Inicializado');
+    console.log(' [ProductosV1] Inicializado');
   }
 
   async getAll(): Promise<Producto[]> {
@@ -62,6 +62,6 @@ export class ProductosPluginV2 implements IProductosPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('📦 [ProductosV1] Cerrando...');
+    console.log(' [ProductosV1] Cerrando...');
   }
 }

@@ -23,17 +23,17 @@ export class AuthPluginV1 implements IAuthPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔐 [AuthV1] Inicializando autenticación local...');
+    console.log(' [AuthV1] Inicializando autenticación local...');
     
     this.service = new AuthServiceV1(this.dbPlugin);
     this.controller = new AuthControllerV1(this.service);
     this.router = createAuthRoutesV1(this.controller);
     
     eventBus.on('auth:login', (data) => {
-      console.log('✓ [AuthV1] Usuario autenticado:', data.usuario);
+      console.log(' [AuthV1] Usuario autenticado:', data.usuario);
     });
     
-    console.log('✓ [AuthV1] Autenticación local inicializada');
+    console.log(' [AuthV1] Autenticación local inicializada');
   }
 
   async login(usuario: string, contrasena: string): Promise<AuthResult> {
@@ -59,6 +59,6 @@ export class AuthPluginV1 implements IAuthPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔐 [AuthV1] Cerrando...');
+    console.log(' [AuthV1] Cerrando...');
   }
 }

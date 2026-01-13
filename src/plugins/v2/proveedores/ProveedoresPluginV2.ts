@@ -20,13 +20,13 @@ export class ProveedoresPluginV2 implements IProveedoresPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🚚 [ProveedoresV2] Inicializando...');
+    console.log(' [ProveedoresV2] Inicializando...');
 
     this.service = new ProveedoresServiceV2(this.dbPlugin);
     this.controller = new ProveedoresControllerV2(this.service);
     this.router = createProveedoresRoutesV2(this.controller);
 
-    console.log('✓ [ProveedoresV2] Inicializado');
+    console.log(' [ProveedoresV2] Inicializado');
   }
 
   async getAll(): Promise<Proveedor[]> {
@@ -58,6 +58,6 @@ export class ProveedoresPluginV2 implements IProveedoresPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🚚 [ProveedoresV1] Cerrando...');
+    console.log(' [ProveedoresV1] Cerrando...');
   }
 }
