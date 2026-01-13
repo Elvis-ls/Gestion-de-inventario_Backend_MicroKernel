@@ -49,7 +49,7 @@ export abstract class PluginFactory {
    * Retorna una familia completa de plugins compatibles
    */
   public createAllPlugins(): PluginFamily {
-    console.log(`🏭 [PluginFactory] Creando familia de plugins versión ${this.getVersion()}`);
+    console.log(` [PluginFactory] Creando familia de plugins versión ${this.getVersion()}`);
     
     return {
       version: this.getVersion(),

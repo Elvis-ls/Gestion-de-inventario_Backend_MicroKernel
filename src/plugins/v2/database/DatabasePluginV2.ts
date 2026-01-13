@@ -44,7 +44,7 @@ export class DatabasePluginV2 implements IDatabasePlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🗄️  [DatabaseV1] Inicializando...');
+    console.log('  [DatabaseV1] Inicializando...');
     
     const connected = await this.testConnection();
     if (!connected) {

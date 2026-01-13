@@ -23,7 +23,7 @@ export class Microkernel {
    * Carga una familia completa de plugins usando una factory
    */
   public async loadPluginFamily(factory: PluginFactory): Promise<void> {
-    console.log('\n🏭 [Microkernel] Cargando familia de plugins...');
+    console.log('\n [Microkernel] Cargando familia de plugins...');
     
     // Crear toda la familia de plugins
     this.pluginFamily = factory.createAllPlugins();
@@ -96,7 +96,7 @@ export class Microkernel {
 
       console.log('\n [Microkernel] Sistema iniciado correctamente');
       if (this.pluginFamily) {
-        console.log(`📦 [Microkernel] Versión de plugins: ${this.pluginFamily.version}`);
+        console.log(` [Microkernel] Versión de plugins: ${this.pluginFamily.version}`);
       }
       console.log(` [Microkernel] Plugins cargados: ${this.plugins.size}`);
       console.log('='.repeat(60) + '\n');

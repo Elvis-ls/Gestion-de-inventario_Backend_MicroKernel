@@ -25,7 +25,7 @@ export class AuthPluginV2 implements IAuthPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('🔐 [AuthV2] Inicializando con JWT...');
+    console.log(' [AuthV2] Inicializando con JWT...');
     
     validateJwtConfig();
     
@@ -34,10 +34,10 @@ export class AuthPluginV2 implements IAuthPlugin {
     this.router = createAuthRoutesV2(this.controller);
     
     eventBus.on('auth:login', (data) => {
-      console.log('✓ [AuthV2] Usuario autenticado:', data.usuario);
+      console.log(' [AuthV2] Usuario autenticado:', data.usuario);
     });
     
-    console.log('✓ [AuthV2] JWT Auth inicializado');
+    console.log(' [AuthV2] JWT Auth inicializado');
   }
 
   async login(usuario: string, contrasena: string): Promise<AuthResult> {
@@ -62,6 +62,6 @@ export class AuthPluginV2 implements IAuthPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('🔐 [AuthV2] Cerrando...');
+    console.log(' [AuthV2] Cerrando...');
   }
 }

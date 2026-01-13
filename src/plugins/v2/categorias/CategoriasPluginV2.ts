@@ -8,7 +8,7 @@ import { createCategoriasRoutesV2 } from './CategoriasRoutesV2';
 
 export class CategoriasPluginV2 implements ICategoriasPlugin {
   public readonly name = 'categorias';
-  public readonly version = '1.0.0';
+  public readonly version = '2.0.0';
   
   private service!: CategoriasServiceV2;
   private controller!: CategoriasControllerV2;
@@ -20,13 +20,13 @@ export class CategoriasPluginV2 implements ICategoriasPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('📁 [CategoriasV1] Inicializando...');
+    console.log(' [CategoriasV2] Inicializando...');
     
     this.service = new CategoriasServiceV2(this.dbPlugin);
     this.controller = new CategoriasControllerV2(this.service);
     this.router = createCategoriasRoutesV2(this.controller);
     
-    console.log('✓ [CategoriasV1] Inicializado');
+    console.log(' [CategoriasV2] Inicializado');
   }
 
   async getAll(): Promise<Categoria[]> {
@@ -58,6 +58,6 @@ export class CategoriasPluginV2 implements ICategoriasPlugin {
   }
 
   async shutdown(): Promise<void> {
-    console.log('📁 [CategoriasV1] Cerrando...');
+    console.log(' [CategoriasV2] Cerrando...');
   }
 }
