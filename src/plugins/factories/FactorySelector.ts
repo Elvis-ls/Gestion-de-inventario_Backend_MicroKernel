@@ -13,20 +13,20 @@ export class FactorySelector {
   static getFactory(version?: string): PluginFactory {
     const selectedVersion = version || process.env.PLUGIN_VERSION || '2.0.0';
     
-    console.log('🎯 [FactorySelector] Seleccionando versión de plugins:', selectedVersion);
+    console.log(' [FactorySelector] Seleccionando versión de plugins:', selectedVersion);
     
     switch (selectedVersion) {
       case '1.0.0':
       case 'v1':
       case 'local':
-        console.log('✓ [FactorySelector] Usando PluginFactoryV1 (Local/Básico)');
+        console.log(' [FactorySelector] Usando PluginFactoryV1 (Local/Básico)');
         return new PluginFactoryV1();
       
       case '2.0.0':
       case 'v2':
       case 'jwt':
       default:
-        console.log('✓ [FactorySelector] Usando PluginFactoryV2 (JWT/Avanzado)');
+        console.log(' [FactorySelector] Usando PluginFactoryV2 (JWT/Avanzado)');
         return new PluginFactoryV2();
     }
   }
