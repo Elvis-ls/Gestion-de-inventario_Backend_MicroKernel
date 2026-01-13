@@ -1,38 +1,110 @@
-import { Pool } from 'pg';
+import { IDatabasePlugin } from '../../../core/interfaces/IDatabasePlugin';
+import { EventBus } from '../../../core/EventBus';
+import { Pool, QueryResult } from 'pg';
+import { Router } from 'express';
+import { config } from '../../../config/env';
 
-export interface DatabasePluginV2 {
-  name: string;
-  version: string;
-  initialize: (core: any) => Promise<void>;
-}
+export class DatabasePluginV2 implements IDatabasePlugin {
+  public readonly name = 'database';
+  public readonly version = '2.0.0';
+  
+  private pool: Pool;
+  private static instance: DatabasePluginV2;
 
-const databasePlugin: DatabasePluginV2 = {
-  name: 'database',
-  version: '2.0.0',
+  constructor() {
+    this.pool = new Pool({
+      host: config.database.host,
+      port: config.database.port,
+      database: config.database.name,
+      user: config.database.user,
+      password: config.database.password,
+      max: 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+    });
+    
+    this.setupListeners();
+  }
 
-  initialize: async (core: any) => {
+  static getInstance(): DatabasePluginV2 {
+    if (!DatabasePluginV2.instance) {
+      DatabasePluginV2.instance = new DatabasePluginV2();
+    }
+    return DatabasePluginV2.instance;
+  }
+
+  private setupListeners(): void {
+    this.pool.on('connect', () => {
+      console.log('🗄️  [DatabaseV1] Nueva conexión establecida');
+    });
+
+    this.pool.on('error', (err) => {
+      console.error('🗄️  [DatabaseV1] Error inesperado:', err);
+    });
+  }
+
+  async initialize(eventBus: EventBus): Promise<void> {
+    console.log('🗄️  [DatabaseV1] Inicializando...');
+    
+    const connected = await this.testConnection();
+    if (!connected) {
+      throw new Error('No se pudo conectar a la base de datos');
+    }
+
+    eventBus.on('system:stopping', async () => {
+      await this.shutdown();
+    });
+
+    console.log('✓ [DatabaseV1] Inicializado correctamente');
+  }
+
+  async testConnection(): Promise<boolean> {
     try {
-      // Usa las mismas variables de entorno que v1
-      const pool = new Pool({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || '5432'),
-        database: process.env.DB_NAME,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-      });
-
-      const client = await pool.connect();
-      console.log('✅ Conexión a la base de datos exitosa (v2)');
-      client.release();
-
-      core.database = pool;
-
-      console.log('✅ Plugin Database v2 inicializado');
+      const result = await this.pool.query('SELECT NOW()');
+      console.log('✓ [DatabaseV1] Conexión exitosa');
+      return true;
     } catch (error) {
-      console.error('❌ Error al inicializar plugin Database v2:', error);
+      console.error('❌ [DatabaseV1] Error conectando:', error);
+      return false;
+    }
+  }
+
+  async query(text: string, params?: any[]): Promise<QueryResult> {
+    const start = Date.now();
+    try {
+      const result = await this.pool.query(text, params);
+      const duration = Date.now() - start;
+      console.log(`⚡ [DatabaseV1] Query ejecutada en ${duration}ms`);
+      return result;
+    } catch (error) {
+      console.error('❌ [DatabaseV1] Error ejecutando query:', error);
       throw error;
     }
-  },
-};
+  }
 
-export default databasePlugin;
+  async getClient() {
+    return await this.pool.connect();
+  }
+
+  getPool(): Pool {
+    return this.pool;
+  }
+
+  async disconnect(): Promise<void> {
+    try {
+      await this.pool.end();
+      console.log('✓ [DatabaseV1] Pool cerrado');
+    } catch (error) {
+      console.error('❌ [DatabaseV1] Error cerrando pool:', error);
+      throw error;
+    }
+  }
+
+  dependencies(): string[] {
+    return [];
+  }
+
+  async shutdown(): Promise<void> {
+    await this.disconnect();
+  }
+}

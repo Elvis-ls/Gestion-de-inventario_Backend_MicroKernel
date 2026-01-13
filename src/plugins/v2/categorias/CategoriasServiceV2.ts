@@ -1,69 +1,88 @@
-import { Pool } from 'pg';
+import { Categoria } from '../../../core/interfaces/ICategoriasPlugin';
+import { IDatabasePlugin } from '../../../core/interfaces/IDatabasePlugin';
 
-interface Categoria {
-  id?: number;
-  nombre: string;
-}
+export class CategoriasServiceV2 {
+  constructor(private db: IDatabasePlugin) {}
 
-export class CategoriasService {
-  private static pool: Pool;
-
-  static initialize(pool: Pool): void {
-    this.pool = pool;
-  }
-
-  // V2: Ahora incluye ordenamiento por nombre
-  static async getAll(): Promise<Categoria[]> {
-    const query = 'SELECT * FROM categorias ORDER BY nombre ASC';
-    const result = await this.pool.query(query);
-    return result.rows;
-  }
-
-  static async getById(id: number): Promise<Categoria | null> {
-    const query = 'SELECT * FROM categorias WHERE id = $1';
-    const result = await this.pool.query(query, [id]);
-
-    if (result.rows.length === 0) {
-      return null;
-    }
-
-    return result.rows[0];
-  }
-
-  static async create(nombre: string): Promise<Categoria> {
-    const query = 'INSERT INTO categorias (nombre) VALUES ($1) RETURNING *';
-    const result = await this.pool.query(query, [nombre]);
-    return result.rows[0];
-  }
-
-  static async update(id: number, nombre: string): Promise<Categoria | null> {
-    const query = 'UPDATE categorias SET nombre = $1 WHERE id = $2 RETURNING *';
-    const result = await this.pool.query(query, [nombre, id]);
-
-    if (result.rows.length === 0) {
-      return null;
-    }
-
-    return result.rows[0];
-  }
-
-  static async delete(id: number): Promise<boolean> {
-    const query = 'DELETE FROM categorias WHERE id = $1';
-    const result = await this.pool.query(query, [id]);
-
-    return result.rowCount !== null && result.rowCount > 0;
-  }
-
-  // V2: Nuevo método para contar productos por categoría
-  static async getWithProductCount(): Promise<any[]> {
+  async getAll(): Promise<Categoria[]> {
     const query = `
-      SELECT c.*, COUNT(p.id) as total_productos
-      FROM categorias c
-      LEFT JOIN productos p ON c.id = p.categoria_id
-      GROUP BY c.id
-      ORDER BY c.nombre ASC
+      SELECT idcategoria, nombre, descripcion, idestado
+      FROM categorias
+      ORDER BY idcategoria DESC
     `;
-    const result = await this.pool.query(query);
+    const result = await this.db.query(query);
     return result.rows;
+  }
+
+  async getById(id: number): Promise<Categoria | null> {
+    const query = `
+      SELECT idcategoria, nombre, descripcion, idestado
+      FROM categorias
+      WHERE idcategoria = $1
+    `;
+    const result = await this.db.query(query, [id]);
+    return result.rows[0] || null;
+  }
+
+  async create(categoria: Categoria): Promise<Categoria> {
+    const query = `
+      INSERT INTO categorias (nombre, descripcion, idestado)
+      VALUES ($1, $2, $3)
+      RETURNING *
+    `;
+    const values = [
+      categoria.nombre,
+      categoria.descripcion || null,
+      categoria.idestado || 1
+    ];
+    const result = await this.db.query(query, values);
+    return result.rows[0];
+  }
+
+  async update(id: number, categoria: Partial<Categoria>): Promise<Categoria | null> {
+    const query = `
+      UPDATE categorias 
+      SET 
+        nombre = COALESCE($1, nombre),
+        descripcion = COALESCE($2, descripcion),
+        idestado = COALESCE($3, idestado)
+      WHERE idcategoria = $4
+      RETURNING *
+    `;
+    const values = [
+      categoria.nombre,
+      categoria.descripcion,
+      categoria.idestado,
+      id
+    ];
+    const result = await this.db.query(query, values);
+    return result.rows[0] || null;
+  }
+
+  async delete(id: number): Promise<boolean> {
+    try {
+      const client = await this.db.getClient();
+      await client.query('BEGIN');
+      
+      await client.query(
+        `UPDATE productos SET idcategoria = NULL WHERE idcategoria = $1`,
+        [id]
+      );
+      
+      const result = await client.query(
+        `UPDATE categorias SET idestado = 2 WHERE idcategoria = $1`,
+        [id]
+      );
+      
+      await client.query('COMMIT');
+      client.release();
+      
+      return result.rowCount ? result.rowCount > 0 : false;
+    } catch (error) {
+      const client = await this.db.getClient();
+      await client.query('ROLLBACK');
+      client.release();
+      throw error;
+    }
   }
 }

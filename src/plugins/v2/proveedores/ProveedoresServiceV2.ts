@@ -1,84 +1,136 @@
-import { Pool } from 'pg';
+import { Proveedor } from '../../../core/interfaces/IProveedoresPlugin';
+import { IDatabasePlugin } from '../../../core/interfaces/IDatabasePlugin';
 
-interface Proveedor {
-  id?: number;
-  nombre: string;
-  contacto: string;
-}
+/**
+ * Servicio de lógica de negocio para Proveedores V2
+ */
+export class ProveedoresServiceV2 {
+  constructor(private db: IDatabasePlugin) {}
 
-export class ProveedoresService {
-  private static pool: Pool;
-
-  static initialize(pool: Pool): void {
-    this.pool = pool;
-  }
-
-  // V2: Ahora ordena por nombre ascendente
-  static async getAll(): Promise<Proveedor[]> {
-    const query = 'SELECT * FROM proveedores ORDER BY nombre ASC';
-    const result = await this.pool.query(query);
+  /**
+   * Obtiene todos los proveedores
+   */
+  async getAll(): Promise<Proveedor[]> {
+    const query = `
+      SELECT 
+        p.idproveedor,
+        p.nombreempresa,
+        p.nombreceo,
+        p.telefono,
+        p.email,
+        p.direccion,
+        p.idestado
+      FROM proveedores p
+      ORDER BY p.idproveedor DESC
+    `;
+    
+    const result = await this.db.query(query);
     return result.rows;
   }
 
-  static async getById(id: number): Promise<Proveedor | null> {
-    const query = 'SELECT * FROM proveedores WHERE id = $1';
-    const result = await this.pool.query(query, [id]);
-
-    if (result.rows.length === 0) {
-      return null;
-    }
-
-    return result.rows[0];
+  /**
+   * Obtiene un proveedor por ID
+   */
+  async getById(id: number): Promise<Proveedor | null> {
+    const query = `
+      SELECT 
+        p.idproveedor,
+        p.nombreempresa,
+        p.nombreceo,
+        p.telefono,
+        p.email,
+        p.direccion,
+        p.idestado
+      FROM proveedores p
+      WHERE p.idproveedor = $1
+    `;
+    
+    const result = await this.db.query(query, [id]);
+    return result.rows[0] || null;
   }
 
-  static async create(proveedor: Proveedor): Promise<Proveedor> {
+  /**
+   * Crea un nuevo proveedor
+   */
+  async create(proveedor: Proveedor): Promise<Proveedor> {
     const query = `
-      INSERT INTO proveedores (nombre, contacto) 
-      VALUES ($1, $2) 
+      INSERT INTO proveedores (nombreempresa, nombreceo, telefono, email, direccion, idestado)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
     `;
-    const result = await this.pool.query(query, [proveedor.nombre, proveedor.contacto]);
+    
+    const values = [
+      proveedor.nombreempresa,
+      proveedor.nombreceo || null,
+      proveedor.telefono || null,
+      proveedor.email || null,
+      proveedor.direccion || null,
+      proveedor.idestado || 1
+    ];
+    
+    const result = await this.db.query(query, values);
     return result.rows[0];
   }
 
-  static async update(id: number, proveedor: Proveedor): Promise<Proveedor | null> {
+  /**
+   * Actualiza un proveedor
+   */
+  async update(id: number, proveedor: Partial<Proveedor>): Promise<Proveedor | null> {
     const query = `
       UPDATE proveedores 
-      SET nombre = $1, contacto = $2 
-      WHERE id = $3 
+      SET 
+        nombreempresa = COALESCE($1, nombreempresa),
+        nombreceo = COALESCE($2, nombreceo),
+        telefono = COALESCE($3, telefono),
+        email = COALESCE($4, email),
+        direccion = COALESCE($5, direccion),
+        idestado = COALESCE($6, idestado)
+      WHERE idproveedor = $7
       RETURNING *
     `;
-    const result = await this.pool.query(query, [proveedor.nombre, proveedor.contacto, id]);
+    
+    const values = [
+      proveedor.nombreempresa,
+      proveedor.nombreceo,
+      proveedor.telefono,
+      proveedor.email,
+      proveedor.direccion,
+      proveedor.idestado,
+      id
+    ];
+    
+    const result = await this.db.query(query, values);
+    return result.rows[0] || null;
+  }
 
-    if (result.rows.length === 0) {
-      return null;
+  /**
+   * Elimina un proveedor (actualiza productos a NULL y elimina)
+   */
+  async delete(id: number): Promise<boolean> {
+    const client = await this.db.getClient();
+    
+    try {
+      await client.query('BEGIN');
+      
+      // Primero, establecer idproveedor a NULL en los productos relacionados
+      await client.query(
+        `UPDATE productos SET idproveedor = NULL WHERE idproveedor = $1`,
+        [id]
+      );
+      
+      // Luego, eliminar el proveedor
+      const result = await client.query(
+        `DELETE FROM proveedores WHERE idproveedor = $1 RETURNING idproveedor`,
+        [id]
+      );
+      
+      await client.query('COMMIT');
+      return result.rowCount ? result.rowCount > 0 : false;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
-
-    return result.rows[0];
-  }
-
-  static async delete(id: number): Promise<boolean> {
-    const query = 'DELETE FROM proveedores WHERE id = $1';
-    const result = await this.pool.query(query, [id]);
-
-    return result.rowCount !== null && result.rowCount > 0;
-  }
-
-  // V2: Nuevo método para buscar proveedores por nombre o contacto
-  static async search(searchTerm: string): Promise<Proveedor[]> {
-    const query = `
-      SELECT * FROM proveedores 
-      WHERE nombre ILIKE $1 OR contacto ILIKE $1 
-      ORDER BY nombre ASC
-    `;
-    const result = await this.pool.query(query, [`%${searchTerm}%`]);
-    return result.rows;
-  }
-
-  // V2: Nuevo método para contar proveedores
-  static async getCount(): Promise<number> {
-    const query = 'SELECT COUNT(*) as total FROM proveedores';
-    const result = await this.pool.query(query);
-    return parseInt(result.rows[0].total);
   }
 }

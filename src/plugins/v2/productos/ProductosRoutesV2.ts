@@ -1,18 +1,15 @@
 import { Router } from 'express';
-import { ProductosController } from './ProductosControllerV2';
-import { AuthMiddleware } from '../auth/authMiddleware';
+import { ProductosControllerV2 } from './ProductosControllerV2';
 
-const router = Router();
-
-// V2: Todas las rutas requieren autenticación JWT
-router.use(AuthMiddleware.authenticate);
-
-router.get('/', ProductosController.getAll);
-router.get('/bajo-stock', ProductosController.getBajoStock);
-router.get('/search', ProductosController.search); // V2: Nueva ruta para búsqueda
-router.get('/:id', ProductosController.getById);
-router.post('/', ProductosController.create);
-router.put('/:id', ProductosController.update);
-router.delete('/:id', ProductosController.delete);
-
-export default router;
+export const createProductosRoutesV2 = (controller: ProductosControllerV2): Router => {
+  const router = Router();
+  
+  router.get('/', controller.getAll);
+  router.get('/bajo-stock', controller.getBajoStock);
+  router.get('/:id', controller.getById);
+  router.post('/', controller.create);
+  router.put('/:id', controller.update);
+  router.delete('/:id', controller.delete);
+  
+  return router;
+};

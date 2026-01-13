@@ -1,32 +1,67 @@
-import productosRoutes from './ProductosRoutesV2';
-import { ProductosService } from './ProductosServiceV2';
+import { IProductosPlugin, Producto } from '../../../core/interfaces/IProductosPlugin';
+import { EventBus } from '../../../core/EventBus';
+import { Router } from 'express';
+import { IDatabasePlugin } from '../../../core/interfaces/IDatabasePlugin';
+import { ProductosServiceV2 } from './ProductosServiceV2';
+import { ProductosControllerV2 } from './ProductosControllerV2';
+import { createProductosRoutesV2 } from './ProductosRoutesV2';
 
-export interface ProductosPluginV2 {
-  name: string;
-  version: string;
-  initialize: (core: any) => Promise<void>;
+export class ProductosPluginV2 implements IProductosPlugin {
+  public readonly name = 'productos';
+  public readonly version = '2.0.0';
+  
+  private service!: ProductosServiceV2;
+  private controller!: ProductosControllerV2;
+  private router!: Router;
+  private dbPlugin: IDatabasePlugin;
+
+  constructor(databasePlugin: IDatabasePlugin) {
+    this.dbPlugin = databasePlugin;
+  }
+
+  async initialize(eventBus: EventBus): Promise<void> {
+    console.log('📦 [ProductosV1] Inicializando...');
+    
+    this.service = new ProductosServiceV2(this.dbPlugin);
+    this.controller = new ProductosControllerV2(this.service);
+    this.router = createProductosRoutesV2(this.controller);
+    
+    console.log('✓ [ProductosV1] Inicializado');
+  }
+
+  async getAll(): Promise<Producto[]> {
+    return await this.service.getAll();
+  }
+
+  async getById(id: number): Promise<Producto | null> {
+    return await this.service.getById(id);
+  }
+
+  async create(producto: Producto): Promise<Producto> {
+    return await this.service.create(producto);
+  }
+
+  async update(id: number, producto: Partial<Producto>): Promise<Producto | null> {
+    return await this.service.update(id, producto);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    return await this.service.delete(id);
+  }
+
+  async getBajoStock(): Promise<Producto[]> {
+    return await this.service.getProductosBajoStock();
+  }
+
+  getRoutes(): Router {
+    return this.router;
+  }
+
+  dependencies(): string[] {
+    return ['database'];
+  }
+
+  async shutdown(): Promise<void> {
+    console.log('📦 [ProductosV1] Cerrando...');
+  }
 }
-
-const productosPlugin: ProductosPluginV2 = {
-  name: 'productos',
-  version: '2.0.0',
-
-  initialize: async (core: any) => {
-    try {
-      if (!core.database) {
-        throw new Error('El plugin de base de datos debe inicializarse primero');
-      }
-
-      ProductosService.initialize(core.database);
-
-      core.app.use('/api/v2/productos', productosRoutes);
-
-      console.log('✅ Plugin Productos v2 inicializado');
-    } catch (error) {
-      console.error('❌ Error al inicializar plugin Productos v2:', error);
-      throw error;
-    }
-  },
-};
-
-export default productosPlugin;

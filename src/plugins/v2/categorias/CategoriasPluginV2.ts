@@ -1,32 +1,63 @@
-import categoriasRoutes from './CategoriasRoutesV2';
-import { CategoriasService } from './CategoriasServiceV2';
+import { ICategoriasPlugin, Categoria } from '../../../core/interfaces/ICategoriasPlugin';
+import { EventBus } from '../../../core/EventBus';
+import { Router } from 'express';
+import { IDatabasePlugin } from '../../../core/interfaces/IDatabasePlugin';
+import { CategoriasServiceV2 } from './CategoriasServiceV2';
+import { CategoriasControllerV2 } from './CategoriasControllerV2';
+import { createCategoriasRoutesV2 } from './CategoriasRoutesV2';
 
-export interface CategoriasPluginV2 {
-  name: string;
-  version: string;
-  initialize: (core: any) => Promise<void>;
+export class CategoriasPluginV2 implements ICategoriasPlugin {
+  public readonly name = 'categorias';
+  public readonly version = '1.0.0';
+  
+  private service!: CategoriasServiceV2;
+  private controller!: CategoriasControllerV2;
+  private router!: Router;
+  private dbPlugin: IDatabasePlugin;
+
+  constructor(databasePlugin: IDatabasePlugin) {
+    this.dbPlugin = databasePlugin;
+  }
+
+  async initialize(eventBus: EventBus): Promise<void> {
+    console.log('📁 [CategoriasV1] Inicializando...');
+    
+    this.service = new CategoriasServiceV2(this.dbPlugin);
+    this.controller = new CategoriasControllerV2(this.service);
+    this.router = createCategoriasRoutesV2(this.controller);
+    
+    console.log('✓ [CategoriasV1] Inicializado');
+  }
+
+  async getAll(): Promise<Categoria[]> {
+    return await this.service.getAll();
+  }
+
+  async getById(id: number): Promise<Categoria | null> {
+    return await this.service.getById(id);
+  }
+
+  async create(categoria: Categoria): Promise<Categoria> {
+    return await this.service.create(categoria);
+  }
+
+  async update(id: number, categoria: Partial<Categoria>): Promise<Categoria | null> {
+    return await this.service.update(id, categoria);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    return await this.service.delete(id);
+  }
+
+  getRoutes(): Router {
+    return this.router;
+  }
+
+  dependencies(): string[] {
+    return ['database'];
+  }
+
+  async shutdown(): Promise<void> {
+    console.log('📁 [CategoriasV1] Cerrando...');
+  }
 }
-
-const categoriasPlugin: CategoriasPluginV2 = {
-  name: 'categorias',
-  version: '2.0.0',
-
-  initialize: async (core: any) => {
-    try {
-      if (!core.database) {
-        throw new Error('El plugin de base de datos debe inicializarse primero');
-      }
-
-      CategoriasService.initialize(core.database);
-
-      core.app.use('/api/v2/categorias', categoriasRoutes);
-
-      console.log('✅ Plugin Categorías v2 inicializado');
-    } catch (error) {
-      console.error('❌ Error al inicializar plugin Categorías v2:', error);
-      throw error;
-    }
-  },
-};
-
-export default categoriasPlugin;

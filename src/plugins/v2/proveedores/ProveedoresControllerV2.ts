@@ -1,94 +1,93 @@
 import { Request, Response } from 'express';
-import { ProveedoresService } from './ProveedoresServiceV2';
+import { ProveedoresServiceV2 } from './ProveedoresServiceV2';
 
-export class ProveedoresController {
-  static async getAll(req: Request, res: Response): Promise<void> {
+/**
+ * Controlador de Proveedores V1
+ * Maneja las peticiones HTTP
+ */
+export class ProveedoresControllerV2 {
+  constructor(private service: ProveedoresServiceV2) {}
+
+  /**
+   * GET /api/proveedores
+   */
+  getAll = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const proveedores = await ProveedoresService.getAll();
-
+      const proveedores = await this.service.getAll();
       res.json({
         success: true,
-        data: proveedores,
+        data: proveedores
       });
     } catch (error) {
+      console.error('[ProveedoresControllerV2] Error en getAll:', error);
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Error al obtener proveedores',
+        message: 'Error obteniendo proveedores'
       });
     }
-  }
+  };
 
-  static async getById(req: Request, res: Response): Promise<void> {
+  /**
+   * GET /api/proveedores/:id
+   */
+  getById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
-      const proveedor = await ProveedoresService.getById(Number(id));
-
+      const id = parseInt(req.params.id);
+      const proveedor = await this.service.getById(id);
+      
       if (!proveedor) {
         res.status(404).json({
           success: false,
-          message: 'Proveedor no encontrado',
+          message: 'Proveedor no encontrado'
         });
         return;
       }
 
       res.json({
         success: true,
-        data: proveedor,
+        data: proveedor
       });
     } catch (error) {
+      console.error('[ProveedoresControllerV1] Error en getById:', error);
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Error al obtener proveedor',
+        message: 'Error obteniendo proveedor'
       });
     }
-  }
+  };
 
-  static async create(req: Request, res: Response): Promise<void> {
+  /**
+   * POST /api/proveedores
+   */
+  create = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { nombre, contacto } = req.body;
-
-      if (!nombre || !contacto) {
-        res.status(400).json({
-          success: false,
-          message: 'Nombre y contacto son requeridos',
-        });
-        return;
-      }
-
-      const proveedor = await ProveedoresService.create({ nombre, contacto });
-
+      const proveedor = await this.service.create(req.body);
       res.status(201).json({
         success: true,
         data: proveedor,
-        message: 'Proveedor creado con éxito',
+        message: 'Proveedor creado exitosamente'
       });
     } catch (error) {
+      console.error('[ProveedoresControllerV1] Error en create:', error);
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Error al crear proveedor',
+        message: 'Error creando proveedor'
       });
     }
-  }
+  };
 
-  static async update(req: Request, res: Response): Promise<void> {
+  /**
+   * PUT /api/proveedores/:id
+   */
+  update = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
-      const { nombre, contacto } = req.body;
-
-      if (!nombre || !contacto) {
-        res.status(400).json({
-          success: false,
-          message: 'Nombre y contacto son requeridos',
-        });
-        return;
-      }
-
-      const proveedor = await ProveedoresService.update(Number(id), { nombre, contacto });
-
+      const id = parseInt(req.params.id);
+      const proveedor = await this.service.update(id, req.body);
+      
       if (!proveedor) {
         res.status(404).json({
           success: false,
-          message: 'Proveedor no encontrado',
+          message: 'Proveedor no encontrado'
         });
         return;
       }
@@ -96,82 +95,43 @@ export class ProveedoresController {
       res.json({
         success: true,
         data: proveedor,
-        message: 'Proveedor actualizado con éxito',
+        message: 'Proveedor actualizado exitosamente'
       });
     } catch (error) {
+      console.error('[ProveedoresControllerV1] Error en update:', error);
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Error al actualizar proveedor',
+        message: 'Error actualizando proveedor'
       });
     }
-  }
+  };
 
-  static async delete(req: Request, res: Response): Promise<void> {
+  /**
+   * DELETE /api/proveedores/:id
+   */
+  delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
-      const deleted = await ProveedoresService.delete(Number(id));
-
+      const id = parseInt(req.params.id);
+      const deleted = await this.service.delete(id);
+      
       if (!deleted) {
         res.status(404).json({
           success: false,
-          message: 'Proveedor no encontrado',
+          message: 'Proveedor no encontrado'
         });
         return;
       }
 
       res.json({
         success: true,
-        message: 'Proveedor eliminado con éxito',
+        message: 'Proveedor eliminado exitosamente'
       });
     } catch (error) {
+      console.error('[ProveedoresControllerV1] Error en delete:', error);
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Error al eliminar proveedor',
+        message: 'Error eliminando proveedor'
       });
     }
-  }
-
-  // V2: Nuevo endpoint para buscar proveedores
-  static async search(req: Request, res: Response): Promise<void> {
-    try {
-      const { q } = req.query;
-
-      if (!q) {
-        res.status(400).json({
-          success: false,
-          message: 'El parámetro q es requerido',
-        });
-        return;
-      }
-
-      const proveedores = await ProveedoresService.search(q as string);
-
-      res.json({
-        success: true,
-        data: proveedores,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error instanceof Error ? error.message : 'Error al buscar proveedores',
-      });
-    }
-  }
-
-  // V2: Nuevo endpoint para obtener el conteo total
-  static async getCount(req: Request, res: Response): Promise<void> {
-    try {
-      const count = await ProveedoresService.getCount();
-
-      res.json({
-        success: true,
-        data: { total: count },
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error instanceof Error ? error.message : 'Error al contar proveedores',
-      });
-    }
-  }
+  };
 }
