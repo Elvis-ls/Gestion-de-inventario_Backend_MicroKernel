@@ -1,79 +1,47 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtService } from './JwtService';
+import jwt from 'jsonwebtoken';
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: number;
-    usuario: string;
-  };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: number;
+        usuario: string;
+        rol: string;
+      };
+    }
+  }
 }
 
-export class AuthMiddleware {
-  /**
-   * Middleware para verificar el token JWT
-   */
-  static authenticate(req: AuthRequest, res: Response, next: NextFunction): void {
-    try {
-      const authHeader = req.headers.authorization;
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-      if (!authHeader) {
-        res.status(401).json({
-          success: false,
-          message: 'Token no proporcionado',
-        });
-        return;
-      }
-
-      // Extraer el token del header "Bearer <token>"
-      const token = authHeader.split(' ')[1];
-
-      if (!token) {
-        res.status(401).json({
-          success: false,
-          message: 'Formato de token inválido',
-        });
-        return;
-      }
-
-      // Verificar el token usando el método estático
-      const payload = JwtService.verifyAccessToken(token);
-
-      // Agregar la información del usuario al request
-      req.user = {
-        id: payload.id,
-        usuario: payload.usuario,
-      };
-
-      next();
-    } catch (error) {
-      res.status(401).json({
+    if (!token) {
+      return res.status(401).json({
         success: false,
-        message: error instanceof Error ? error.message : 'Token inválido',
+        message: 'Token no proporcionado'
       });
     }
-  }
 
-  /**
-   * Middleware opcional para verificar token sin bloquear la request
-   */
-  static optionalAuthenticate(req: AuthRequest, res: Response, next: NextFunction): void {
-    try {
-      const authHeader = req.headers.authorization;
-
-      if (authHeader) {
-        const token = authHeader.split(' ')[1];
-        if (token) {
-          const payload = JwtService.verifyAccessToken(token);
-          req.user = {
-            id: payload.id,
-            usuario: payload.usuario,
-          };
-        }
+    jwt.verify(token, process.env.JWT_SECRET || 'mi_clave_secreta', (err: any, decoded: any) => {
+      if (err) {
+        return res.status(403).json({
+          success: false,
+          message: 'Token inválido o expirado'
+        });
       }
+
+      req.user = decoded;
       next();
-    } catch (error) {
-      // En caso de error, simplemente continúa sin usuario autenticado
-      next();
-    }
+    });
+
+  } catch (error) {
+    console.error('Error en authenticateToken:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al verificar el token'
+    });
   }
-}
+};
