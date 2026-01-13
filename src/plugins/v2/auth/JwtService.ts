@@ -6,11 +6,11 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
 export interface TokenPayload {
-  sub: number;        // userId
+  sub: number;        
   usuario: string;
-  tokenType?: string; // solo presente en el refresh token
-  iat?: number;       // issued at (opcional, agregado por JWT)
-  exp?: number;       // expiration (opcional, agregado por JWT)
+  tokenType?: string; 
+  iat?: number;       
+  exp?: number;       
 }
 
 export class JwtService {

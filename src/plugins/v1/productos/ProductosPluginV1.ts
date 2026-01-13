@@ -20,13 +20,13 @@ export class ProductosPluginV1 implements IProductosPlugin {
   }
 
   async initialize(eventBus: EventBus): Promise<void> {
-    console.log('📦 [ProductosV1] Inicializando...');
+    console.log(' [ProductosV1] Inicializando...');
     
     this.service = new ProductosServiceV1(this.dbPlugin);
     this.controller = new ProductosControllerV1(this.service);
     this.router = createProductosRoutesV1(this.controller);
     
-    console.log('✓ [ProductosV1] Inicializado');
+    console.log(' [ProductosV1] Inicializado');
   }
 
   async getAll(): Promise<Producto[]> {
