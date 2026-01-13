@@ -31,26 +31,26 @@ export class PluginFactoryV1 extends PluginFactory {
 
   createDatabasePlugin(): IDatabasePlugin {
     if (!this.databaseInstance) {
-      console.log('🏭 [FactoryV1] Creando DatabasePluginV1...');
+      console.log(' [FactoryV1] Creando DatabasePluginV1...');
       this.databaseInstance = DatabasePluginV1.getInstance();
     }
     return this.databaseInstance;
   }
 
   createAuthPlugin(): IAuthPlugin {
-    console.log('🏭 [FactoryV1] Creando AuthPluginV1 (Local)...');
+    console.log(' [FactoryV1] Creando AuthPluginV1 (Local)...');
     const dbPlugin = this.createDatabasePlugin();
     return new AuthPluginV1(dbPlugin);
   }
 
   createCategoriasPlugin(): ICategoriasPlugin {
-    console.log('🏭 [FactoryV1] Creando CategoriasPluginV1...');
+    console.log(' [FactoryV1] Creando CategoriasPluginV1...');
     const dbPlugin = this.createDatabasePlugin();
     return new CategoriasPluginV1(dbPlugin);
   }
 
   createProductosPlugin(): IProductosPlugin {
-    console.log('🏭 [FactoryV1] Creando ProductosPluginV1...');
+    console.log(' [FactoryV1] Creando ProductosPluginV1...');
     const dbPlugin = this.createDatabasePlugin();
     return new ProductosPluginV1(dbPlugin);
   }
