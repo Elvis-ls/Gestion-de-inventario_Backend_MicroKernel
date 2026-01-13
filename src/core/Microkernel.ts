@@ -28,7 +28,7 @@ export class Microkernel {
     // Crear toda la familia de plugins
     this.pluginFamily = factory.createAllPlugins();
     
-    console.log(`✓ [Microkernel] Familia de plugins versión ${this.pluginFamily.version} creada`);
+    console.log(` [Microkernel] Familia de plugins versión ${this.pluginFamily.version} creada`);
     console.log(`  - Auth: ${this.pluginFamily.auth.version}`);
     console.log(`  - Database: ${this.pluginFamily.database.version}`);
     console.log(`  - Categorías: ${this.pluginFamily.categorias.version}`);
@@ -48,7 +48,7 @@ export class Microkernel {
    */
   private async registerPlugin(plugin: IPlugin): Promise<void> {
     try {
-      console.log(`\n📦 [Microkernel] Registrando plugin: ${plugin.name} v${plugin.version}`);
+      console.log(`\n [Microkernel] Registrando plugin: ${plugin.name} v${plugin.version}`);
 
       // Verificar dependencias
       if (plugin.dependencies) {
@@ -72,9 +72,9 @@ export class Microkernel {
       // Guardar plugin
       this.plugins.set(plugin.name, plugin);
       
-      console.log(`✓ [Microkernel] Plugin ${plugin.name} registrado exitosamente`);
+      console.log(` [Microkernel] Plugin ${plugin.name} registrado exitosamente`);
     } catch (error) {
-      console.error(`❌ [Microkernel] Error registrando plugin ${plugin.name}:`, error);
+      console.error(` [Microkernel] Error registrando plugin ${plugin.name}:`, error);
       throw error;
     }
   }
@@ -84,7 +84,7 @@ export class Microkernel {
    */
   public async start(): Promise<void> {
     console.log('\n' + '='.repeat(60));
-    console.log('  🚀 INICIANDO MICROKERNEL CON ABSTRACT FACTORY');
+    console.log('   INICIANDO MICROKERNEL CON ABSTRACT FACTORY');
     console.log('='.repeat(60));
 
     try {
@@ -94,14 +94,14 @@ export class Microkernel {
 
       this.eventBus.emit('system:started');
 
-      console.log('\n✅ [Microkernel] Sistema iniciado correctamente');
+      console.log('\n [Microkernel] Sistema iniciado correctamente');
       if (this.pluginFamily) {
         console.log(`📦 [Microkernel] Versión de plugins: ${this.pluginFamily.version}`);
       }
-      console.log(`📦 [Microkernel] Plugins cargados: ${this.plugins.size}`);
+      console.log(` [Microkernel] Plugins cargados: ${this.plugins.size}`);
       console.log('='.repeat(60) + '\n');
     } catch (error) {
-      console.error('❌ [Microkernel] Error iniciando el sistema:', error);
+      console.error(' [Microkernel] Error iniciando el sistema:', error);
       throw error;
     }
   }
@@ -110,7 +110,7 @@ export class Microkernel {
    * Detiene el microkernel y limpia recursos
    */
   public async shutdown(): Promise<void> {
-    console.log('\n🛑 [Microkernel] Deteniendo sistema...');
+    console.log('\n [Microkernel] Deteniendo sistema...');
     
     this.eventBus.emit('system:stopping');
 
@@ -123,7 +123,7 @@ export class Microkernel {
     }
 
     this.eventBus.emit('system:stopped');
-    console.log('✓ [Microkernel] Sistema detenido correctamente');
+    console.log(' [Microkernel] Sistema detenido correctamente');
   }
 
   /**
